@@ -1,0 +1,247 @@
+@import url('https://fonts.googleapis.com/css?family=Lato');
+
+.border-form {
+  border: 2px solid #ccc;
+  padding: 30px;
+}
+
+#take_profit{
+    height:3em
+}
+
+#stop_loss{
+    height:3em
+}
+.nro_registro{
+    height:3em !important;
+    width: 33% !important;
+    margin: 6% !important;
+}
+#nro_home{
+    margin: 18% !important;
+}
+.row_registros{
+    padding-top: 5% !important;
+}
+
+#at_price{
+    height:3em
+}
+
+a:link   
+{   
+ text-decoration:none;   
+}   
+
+a.nounderline:link   
+{   
+ text-decoration:none;   
+}   
+
+.btn-at-price{
+ margin-top: 36px;   
+ width:100%;   
+}
+
+.btn-signal{
+     padding: 3.5% 4% !important;
+}
+.btn-signal-price{
+    /*margin: -7% 0 0% 122% !important;*/
+    margin: -52% 0 0% 122% !important;
+    padding-bottom: 10% !important;
+}
+
+.border-error{
+ /*border-color:#b94a48 !important;*/   
+ border:2px solid #b94a48 !important
+}
+
+.text-error{
+ font-weight: bold;
+ color:#b94a48;   
+}
+
+/* css loading */
+#divLoading
+{
+    display : none;
+}
+#divLoading.show
+{
+    display : block;
+    position : fixed;
+    z-index: 100;
+    background-image : url('http://loadinggif.com/images/image-selection/3.gif');
+    background-color:#666;
+    opacity : 0.4;
+    background-repeat : no-repeat;
+    background-position : center;
+    left : 0;
+    bottom : 0;
+    right : 0;
+    top : 0;
+}
+#loadinggif.show
+{
+    left : 50%;
+    top : 50%;
+    position : absolute;
+    z-index : 101;
+    width : 32px;
+    height : 32px;
+    margin-left : -16px;
+    margin-top : -16px;
+}
+div.content {
+   width : 1000px;
+   height : 1000px;
+}
+
+
+/* Estilos para los signos de bien y mal */
+.yes_green{
+    background-color:#00cc00;
+    color:#fff;
+    font-weight: bold;
+}
+.no_red{
+    background-color:#FB0000;
+    color:#fff;
+    font-weight: bold;
+}
+/********************/
+
+.color_verde{
+    color:#00cc00;
+    font-weight: bold;
+    font-size: 24px;
+}
+
+.color_rojo{
+    color:#FB0000;
+    font-weight: bold;
+    font-size: 24px;
+}
+
+.color_am{
+    color:#EA8223;
+    font-weight: bold;
+    font-size: 24px;
+}
+
+.color_cancel{
+    color:#EA8223;
+}
+
+.color_text{
+    color:#EA8223 !important;
+}
+
+/*Estilos para view admin*/
+#table_result{
+    background-color: #1B1B1D;
+    border: #292B2E 1px solid;
+    padding: 7px;
+    border-collapse: collapse;
+    border-spacing: 0;
+    width: 100%;
+    font-family: 'Lato', sans-serif;
+    
+}
+
+#table_result thead tr th{
+    color:#B3C0D3;
+    border: #292B2E 1px solid;
+    /*padding: 7px;*/
+    padding: 18px 7px 24px;
+    text-align: center !important;
+    width: 18%;
+    
+    font-family: 'Lato', sans-serif;
+    font-weight: 400;
+    text-transform: uppercase;
+}
+
+#table_result tbody tr td{
+    color:#fff;
+    border: #292B2E 1px solid;
+    padding: 7px;
+    /*text-align: center !important;*/
+    text-align: center;
+    width: 18%;
+}
+/********************/
+
+/*Estilos para view Home*/
+#table_result_home{
+   /*width: 80%;*/
+   width: 85%;
+   margin: auto;
+   
+   background-color: #1B1B1D;
+    border: #292B2E 1px solid;
+    padding: 7px;
+    border-collapse: collapse;
+    border-spacing: 0;
+    font-family: 'Lato', sans-serif;
+    font-size: 15px !important;
+    
+}
+#table_result_home thead tr th{
+    background-color: #1b1b1d;
+    color:#B3C0D3 !important;
+    border: #292B2E 1px solid;
+    padding: 18px 7px 24px !important;
+    text-align: center !important;
+    
+    font-family: 'Lato', sans-serif;
+    font-weight: 400;
+    text-transform: uppercase;
+}
+
+#table_result_home tbody tr td{
+    color:#fff;
+    border: #292B2E 1px solid;
+    text-align: center !important;
+    padding:7px !important;
+}
+/********************/
+/*Estilos para view Private*/
+#table_result_private{
+   /*width: 80%;*/
+   width: 89%;
+   margin: auto;
+   
+   background-color: #1B1B1D;
+    border: #292B2E 1px solid;
+    padding: 7px;
+    border-collapse: collapse;
+    border-spacing: 0;
+    font-family: 'Lato', sans-serif;
+    font-size: 15px !important;
+    
+}
+#table_result_private thead tr th{
+    background-color: #1b1b1d;
+    color:#B3C0D3 !important;
+    border: #292B2E 1px solid;
+    padding: 18px 7px 24px !important;
+    text-align: center !important;
+    
+    font-family: 'Lato', sans-serif;
+    font-weight: 400;
+    text-transform: uppercase;
+}
+
+#table_result_private tbody tr td{
+    color:#fff;
+    border: #292B2E 1px solid;
+    text-align: center;
+    padding:7px !important;
+}
+
+.aling_total{
+    text-align: left !important;
+}
+/********************/
