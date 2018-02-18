@@ -735,7 +735,7 @@ $cad = "";
                                                     <td '.$style_ok_po.'>'.digitos($precio,$signal->cod_entry_price).'</td>
                                                     <td>'.$stop_loss.'</td>
                                                     <td>'.$take_profit.'</td>
-                                                    <td '.$class_quality.'>'.round($take_profit/$stop_loss,1).'(<a href="'.$signal->rr_link.'">?</a>)</td>
+                                                    <td '.$class_quality.'>'.round($take_profit/$stop_loss,1).'<a href="'.$signal->rr_link.'">(?)</a></td>
                                                     <td>'.$closing_price_c.'</td>  
                                                     <td>'.$closing_time.'</td>
                                                     <!--<td>'.$result.'</td>-->
