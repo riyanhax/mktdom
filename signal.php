@@ -54,6 +54,7 @@ function signal_install()
         `pips` FLOAT NULL DEFAULT '0',
         `cod_op` TINYINT(1) NOT NULL DEFAULT '0',
         `beep` TINYINT(1) NOT NULL DEFAULT '0',
+        `closing_price` FLOAT NULL DEFAULT '0',
         `closing_time` TIME NULL DEFAULT NULL,
         `method` VARCHAR(255) NULL DEFAULT NULL COLLATE 'utf8_spanish2_ci',
         `method_link` VARCHAR(255) NULL DEFAULT NULL COLLATE 'utf8_spanish2_ci',

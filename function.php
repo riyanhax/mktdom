@@ -138,7 +138,7 @@ function cancelaDatos(){
                 $closing_time = date("H:i:s");
                 
                 $table_signals = $wpdb->prefix . "signals";
-                $wpdb->update($table_signals, array('result' => $resultado,'pips' =>$pips,'cancel'=>1,'closing_time'=>$closing_time), array('ID' => $id_signal));        
+                $wpdb->update($table_signals, array('result' => $resultado,'pips' =>$pips,'cancel'=>1,'closing_price'=>$price_signal,'closing_time'=>$closing_time), array('ID' => $id_signal));        
             }
             
             $cad = draw_table_signal();
@@ -1906,7 +1906,7 @@ function closeMarket(){
                 $pips=abs(round($pips,2));
                 
                 $table_signals = $wpdb->prefix . "signals";
-                $wpdb->update($table_signals, array('result' => $resultado,'pips' =>$pips,'cancel'=>1), array('ID' => $id_signal));        
+                $wpdb->update($table_signals, array('result' => $resultado,'pips' =>$pips,'closing_price'=>$price_signal,'cancel'=>1), array('ID' => $id_signal));        
             }
 
 
