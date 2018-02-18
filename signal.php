@@ -301,7 +301,7 @@ function signal_page(){ //define el contenido de una pagina
                                                 <span id="error_tp_sl" class="text-error"></span>
                                             </div>
                                             <div class="form-group">
-                                                <label class="control-label">R/R link:</label>
+                                                <label class="control-label">R/R link</label>
                                                 <input type="text" class="form-control" id="rr_link_g"/>
                                             </div>
                                         <div class="form-group" id="orden_pendiente" style="display:none">
