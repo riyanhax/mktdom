@@ -2007,7 +2007,7 @@ function updateTableSignals() {
                 
                 $table_signals = $wpdb->prefix . "signals";
 //                $wpdb->update($table_signals, array('result' => $resultado,'pips' =>$pips), array('ID' => $signal->ID));
-                $wpdb->update($table_signals, array('result' => $resultado,'pips' =>$pips,'closing_time'=>$closing_time), array('ID' => $signal->ID));
+                $wpdb->update($table_signals, array('result' => $resultado,'pips' =>$pips,'closing_price'=>$price_signal,'closing_time'=>$closing_time), array('ID' => $signal->ID));
                 }
             }
         }
@@ -2195,7 +2195,7 @@ function updateTableSignals_membership() {
                 $closing_time = date("H:i:s");
                 
 //                $wpdb->update($table_signals, array('result' => $resultado,'pips' =>$pips), array('ID' => $signal->ID));
-                  $wpdb->update($table_signals, array('result' => $resultado,'pips' =>$pips,'closing_time'=>$closing_time), array('ID' => $signal->ID));
+                  $wpdb->update($table_signals, array('result' => $resultado,'pips' =>$pips,'closing_price'=>$price_signal,'closing_time'=>$closing_time), array('ID' => $signal->ID));
                   
                }
             }
