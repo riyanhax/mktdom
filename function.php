@@ -509,6 +509,7 @@ $cad = "";
                             $stop_loss = $signal->stop_loss;
                             $take_profit = $signal->take_profit;
                             $cod_op_g = $signal->cod_op;
+                            $asset = $signal->asset;
                             
                             if($signal->address == 'Pending Order'){ //validamos para que entry price muestre orden pendiente cuando sea el caso
                                 $precio=$signal->orden_pendiente;
@@ -748,7 +749,7 @@ $cad = "";
                                                     }
                                                     
                                                     if($signal->result == 0){
-                                                        $cad .='<td><a href="javascript:void(0);" onclick="editarDatosTP_SL_edit(\''.$signal->ID.'\',\''.$stop_loss.'\',\''.$take_profit.'\',\''.$num_g.'\')" title="Editar">Editar</a></td>';
+                                                        $cad .='<td><a href="javascript:void(0);" onclick="editarDatosTP_SL_edit(\''.$signal->ID.'\',\''.$stop_loss.'\',\''.$take_profit.'\',\''.$num_g.'\',\''.$precio.'\',\''.substr( $asset, -3).'\')" title="Editar">Editar</a></td>';
                                                     }else{
                                                         $cad .='<td>Editar</span></td>';
                                                     }
