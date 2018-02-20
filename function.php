@@ -736,7 +736,7 @@ $cad = "";
                                                     }
                                                     
                                                     if($signal->result == 0){
-                                                        $cad .='<td><a href="javascript:void(0);" onclick="javascript:signal.update(\''.$signal->ID.'\')" title="Editar">Editar</a></td>';
+                                                        $cad .='<td><a href="javascript:void(0);" onclick="actualizarTakeProfit_StopLoss(\''.$signal->ID.'\')" title="Editar">Editar</a></td>';
                                                     }else{
                                                         $cad .='<td>Editar</span></td>';
                                                     }
