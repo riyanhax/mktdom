@@ -7,7 +7,8 @@ jQuery(document).ready(function() {
     signalTable();
 //    setInterval(signalTable,30000);
 //    
-   function signalTable() {
+    var ID_SIGNAL=0;
+    function signalTable() {
         var date = new Date();
         
         var view_table = jQuery('.view_table').val();  //obtenemos la vista de la tabla
@@ -152,6 +153,11 @@ jQuery(document).ready(function() {
     jQuery("#btn-at_price").click(function () {
         generaInsert("Pending Order");
     });
+    
+    jQuery("#btn-update").click(function () {
+        actualizarTakeProfit_StopLoss();
+    });
+
     
     jQuery("#btn-registros").click(function () {
         var home = jQuery("#nro_home").val();
@@ -375,7 +381,9 @@ var signal = {
         }
     }  
 };
-function actualizarTakeProfit_StopLoss(id_signal){
+function actualizarTakeProfit_StopLoss(){
+    
+    var id_signal = jQuery("#id-signal").val();
     var stop_loss_edit = jQuery("#stop-loss-edit").val();
     var take_profit_edit = jQuery("#take-profit-edit").val();
     
@@ -400,6 +408,14 @@ function actualizarTakeProfit_StopLoss(id_signal){
                 }
             );
         }
-    } 
+    }
 }
+
+function editarDatosTP_SL_edit(id_signal,stop_loss,take_profit,num_g){
+    jQuery("#stop-loss-edit").val(stop_loss);
+    jQuery("#take-profit-edit").val(take_profit);
+    jQuery("#id-signal").val(id_signal);
+    jQuery("#num-signal").val(num_g);
+}
+
 
