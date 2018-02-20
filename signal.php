@@ -366,16 +366,20 @@ function signal_page(){ //define el contenido de una pagina
                     <div class="col-md-4 border-form" style="width: 34.333%;padding-bottom: 5px;">
                         <form role="form">
                             <div class="form-group row" > <!-- class row ayuda a que los 2 input esten en la misma fila -->
-                                <div class="col-md-2">
-                                    <label for="label-stop-loss">N°</label>
-                                    <input class="form-control" id="num-signal" type="text" style="height:2.5em;"/>
+                                <div class="col-md-4" style="display: none;">
+                                    <label for="label-stop-loss">ID SIGNAL</label>
+                                    <input class="form-control" id="id-signal" type="text" style="height:2.5em;"/>
                                 </div>
-                                <div class="col-md-5">
+                                <div class="col-md-4">
+                                    <label for="label-stop-loss">N°</label>
+                                    <input class="form-control" id="num-signal" type="text" disabled style="height:2.5em;"/>
+                                </div>
+                                <div class="col-md-4">
                                     <label for="label-stop-loss">New Stop Loss</label>
                                     <input class="form-control" id="stop-loss-edit" type="number"  step=1 style="height:2.5em;"/>
                                 </div>
 
-                                <div class="col-md-5"> 
+                                <div class="col-md-4"> 
                                     <label for="label-take-profit">New Take profit</label>
                                     <input class="form-control" id="take-profit-edit"  type="number"  step=1  style="height:2.5em;"/>
                                 </div>
