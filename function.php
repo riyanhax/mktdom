@@ -415,8 +415,10 @@ global $wpdb;
 $cont_pips_bien=0;
 $cont_pips_mal=0;
 $suma_rr_g=0;
-$num_g=0;
+$num_rr_g=0;
 $prom_rr_g=0;
+$num_g=0;
+
 $data = $wpdb->get_results( 
                 "SELECT *
                  FROM ".$wpdb->prefix ."signals t1
@@ -460,10 +462,20 @@ $cad = "";
 							ENTRY PRICE
 						</th>
 						<th class="text-center">
-							STOP LOSS
+                                                    STOP LOSS
+                                                    <div style="font-size: 8px;">(Original)</div>
+						</th>
+                                                <th class="text-center" style="display:none;">
+                                                    STOP LOSS
+                                                    <div style="font-size: 8px;">(Edited)</div>
 						</th>
 						<th class="text-center">
 							TAKE PROFIT
+                                                        <div style="font-size: 8px;">(Original)</div>
+						</th>
+                                                <th class="text-center" style="display:none;">
+							TAKE PROFIT
+                                                        <div style="font-size: 8px;">(Edited)</div>
 						</th>
 						<th class="text-center">
 							R/R
@@ -698,9 +710,9 @@ $cad = "";
                             
                             if($signal->result>0){
                                 $suma_rr_g+=$signal->take_profit/$signal->stop_loss;
-                                $num_g++;
+                                $num_rr_g++;
                             }
-                            
+                            $num_g++;
                             $pips_g=abs(round($pips_g,2));
                             /*if($signal->cancel==1){
                                 $pips_g=$signal->pips;
@@ -736,7 +748,7 @@ $cad = "";
                                                     }
                                                     
                                                     if($signal->result == 0){
-                                                        $cad .='<td><a href="javascript:void(0);" onclick="actualizarTakeProfit_StopLoss(\''.$signal->ID.'\')" title="Editar">Editar</a></td>';
+                                                        $cad .='<td><a href="javascript:void(0);" onclick="editarDatosTP_SL_edit(\''.$signal->ID.'\',\''.$stop_loss.'\',\''.$take_profit.'\',\''.$num_g.'\')" title="Editar">Editar</a></td>';
                                                     }else{
                                                         $cad .='<td>Editar</span></td>';
                                                     }
@@ -745,12 +757,12 @@ $cad = "";
                                         $cad.='</tr>';
                                         
                             }
-                            $prom_rr_g=round($suma_rr_g/$num_g);
+                            $prom_rr_g=round($suma_rr_g/$num_rr_g);
                         }
                         
                         $suma_pip = calculaSumaPip($cont_pips_bien,$cont_pips_mal); //funcion que calcula el total de pip ganados o perdidos
                         
-                        $cad .="<tr><td colspan='8' class='aling_total'><b>TOTAL</b></td><td>".$prom_rr_g." ".$num_g."</td><td colspan='3'></td>".$suma_pip."</tr>";
+                        $cad .="<tr><td colspan='8' class='aling_total'><b>TOTAL</b></td><td>".$prom_rr_g." ".$num_rr_g."</td><td colspan='3'></td>".$suma_pip."</tr>";
 			$cad .='</tbody>
 			</table>
 		</div>
@@ -808,7 +820,7 @@ global $wpdb;
 $cont_pips_bien=0;
 $cont_pips_mal=0;
 $suma_rr_g=0;
-$num_g=0;
+$num_rr_g=0;
 $prom_rr_g=0;
 $value=getNroSignals('membership'); //obtnemos el numero de señales que se va a mostrar en la tabla membership
 
@@ -1084,7 +1096,7 @@ if($flag != ''){//beeps
                             }
                             if($signal->result>0){
                                 $suma_rr_g+=$signal->take_profit/$signal->stop_loss;
-                                $num_g++;
+                                $num_rr_g++;
                             }
                             $pips_g=abs(round($pips_g,2));
                                         $cad.='<tr class="active">
@@ -1107,7 +1119,7 @@ if($flag != ''){//beeps
                                         $cad.='</tr>';
                                         
                             }
-                            $prom_rr_g=round($suma_rr_g/$num_g);
+                            $prom_rr_g=round($suma_rr_g/$num_rr_g);
                         }
                         
                         $suma_pip = calculaSumaPip($cont_pips_bien,$cont_pips_mal); //funcion que calcula el total de pip ganados o perdidos
@@ -1129,7 +1141,7 @@ global $wpdb;
 $cont_pips_bien=0;
 $cont_pips_mal=0;
 $suma_rr_g=0;
-$num_g=0;
+$num_rr_g=0;
 $prom_rr_g=0;
 $value=getNroSignals('home'); //obtnemos el numero de señales que se va a mostrar en la tabla home
 
@@ -1398,7 +1410,7 @@ $cad = "";
                             }
                             if($signal->result>0){
                                 $suma_rr_g+=$signal->take_profit/$signal->stop_loss;
-                                $num_g++;
+                                $num_rr_g++;
                             }
                             $pips_g=abs(round($pips_g,2));
                                         $cad.='<tr class="active">
@@ -1421,7 +1433,7 @@ $cad = "";
                                         $cad.='</tr>';
                                         
                             }
-                            $prom_rr_g=round($suma_rr_g/$num_g);
+                            $prom_rr_g=round($suma_rr_g/$num_rr_g);
                         }
                         
                         $suma_pip = calculaSumaPip($cont_pips_bien,$cont_pips_mal); //funcion que calcula el total de pip ganados o perdidos
@@ -2053,6 +2065,19 @@ function conviertePIP($cod_asset,$tipo_signal,$signal,$precio_signal,$value,$sl_
         }
         
         return $resultado;
+}
+function conviertePIP_EDIT($cod_asset,$tipo_signal,$signal,$precio_signal,$value,$sl_tp){
+
+    //if( substr( $cod_asset, -3) != 'JPY'  ){
+    if( $cod_asset == 6 || $cod_asset == 7 || $cod_asset == 9 || $cod_asset == 12){
+        $cad = $sl_tp/100;
+        $cad=abs(round($cad * 100)/100); 
+        //$cad=abs(round($cad,2)); 
+    }else{
+        $cad = $sl_tp/10000;
+        $cad=abs(round($cad * 10000)/10000); //redondeo a 5 decimales
+        //$cad=abs(round($cad,2));
+    }
 }
 
 /* Shortcode que va a mostrar la tabla */
