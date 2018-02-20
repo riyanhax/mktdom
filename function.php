@@ -51,6 +51,7 @@ function muestraMonedas(){
 add_action('wp_ajax_registra', 'registraDatos');
 add_action('wp_ajax_elimina', 'eliminaDatos');
 add_action('wp_ajax_cancelar', 'cancelaDatos');
+add_action('wp_ajax_actualiza', 'actualiza_TakeProfit_StopLoss');
 //add_action('wp_ajax_consulta', 'consultaDatos'); //ajax no esta en marcha
 
 //Funcion que dverifica si exiten datos para realizar el bucle
@@ -129,16 +130,17 @@ function cancelaDatos(){
                 else{
                     $pips = ($precio_actual-$price_signal)*10000;
                 }
-
+                
                 //$pips=abs(round($pips * 10)/10);
                 $pips=abs(round($pips,2));
                 
-
+                $closing_price_g = $precio_actual;
+                
                 date_default_timezone_set("Europe/Berlin"); //muestra la fecha y hora de La Paz Bolivia
                 $closing_time = date("H:i:s");
                 
                 $table_signals = $wpdb->prefix . "signals";
-                $wpdb->update($table_signals, array('result' => $resultado,'pips' =>$pips,'cancel'=>1,'closing_price'=>$price_signal,'closing_time'=>$closing_time), array('ID' => $id_signal));        
+                $wpdb->update($table_signals, array('result' => $resultado,'pips' =>$pips,'closing_price' =>$closing_price_g,'cancel'=>1,'closing_time'=>$closing_time), array('ID' => $id_signal));        
             }
             
             $cad = draw_table_signal();
@@ -147,6 +149,24 @@ function cancelaDatos(){
             
             
             
+        }
+    }
+}
+
+function actualiza_TakeProfit_StopLoss(){
+    global $wpdb;
+    if (isset($_POST['action'])) {
+        if($_POST['id_signal'] >0){
+            $id_signal=$_POST['id_signal'];
+            $stop_loss_edit=$_POST['stop_loss_edit'];
+            $take_profit_edit=$_POST['take_profit_edit'];
+        
+            $table_signals = $wpdb->prefix . "signals";
+            $wpdb->update($table_signals, array('stop_loss_edit' =>$stop_loss_edit,'take_profit_edit' =>$take_profit_edit), array('ID' => $id_signal));        
+       
+            $cad = draw_table_signal();
+            echo json_encode($cad);
+            exit();
         }
     }
 }
@@ -394,6 +414,9 @@ updateTableSignals(); //funcion va actualizar la tabla para ver si existen cambi
 global $wpdb;
 $cont_pips_bien=0;
 $cont_pips_mal=0;
+$suma_rr_g=0;
+$num_g=0;
+$prom_rr_g=0;
 $data = $wpdb->get_results( 
                 "SELECT *
                  FROM ".$wpdb->prefix ."signals t1
@@ -409,7 +432,10 @@ $cad = "";
 			<table class="table" id="table_result">
 				<thead>
 					<tr>
-						<th class="text-center" style="display:none">
+						<th class="text-center">
+							N° 
+						</th>
+                                                <th class="text-center" style="display:none">
 							ID 
 						</th>
 						<th class="text-center">
@@ -529,45 +555,35 @@ $cad = "";
                                             if($closing_price_g<=$precio){
                                                 $closing_price_c=substr($closing_price_g."", 0,-3).'<a style="color:#00cc00">'.substr($closing_price_g."", -3);
                                                 if( substr( $signal->asset, -3) == 'JPY'  ){
-                                                    $pips_g = ($stop_loss-$closing_price_g)*100;
+                                                    $pips_g = ($closing_price_g-$precio)*100;
                                                 }
                                                 else{
-                                                    $pips_g = ($stop_loss-$closing_price_g)*10000;
+                                                    $pips_g = ($closing_price_g-$precio)*10000;
                                                 }
                                                 $style_pips="style='color: #00cc00;font-weight: bold;'";
                                             }else{
                                                 $closing_price_c=substr($closing_price_g."", 0,-3).'<a style="color:red">'.substr($closing_price_g."", -3);
                                                 if( substr( $signal->asset, -3) == 'JPY'  ){
-                                                    $pips_g = ($take_profit-$closing_price_g)*100;
+                                                    $pips_g = ($closing_price_g-$precio)*100;
                                                 }
                                                 else{
-                                                    $pips_g = ($take_profit-$closing_price_g)*10000;
+                                                    $pips_g = ($closing_price_g-$precio)*10000;
                                                 }
                                                 $style_pips="style='color: #ff0000;font-weight: bold;'";
                                             }      
                                         }
                                     }else{
-                                        $closing_price_g = $signal->price_signal; 
-                                        //if($closing_price_g<=$precio){
                                         if($signal->result==2){
-                                            //$closing_price_c=substr($closing_price_g."", 0,-3).'<a style="color:#00cc00">'.substr($closing_price_g."", -3);
-                                            $closing_price_c=substr($take_profit."", 0,-3).'<a style="color:#00cc00">'.substr($take_profit."", -3);
-                                            if( substr( $signal->asset, -3) == 'JPY'  ){
-                                                $pips_g = ($stop_loss-$closing_price_g)*100;
-                                            }
-                                            else{
-                                                $pips_g = ($stop_loss-$closing_price_g)*10000;
-                                            }
-                                        }else{
-                                            //$closing_price_c=substr($closing_price_g."", 0,-3).'<a style="color:red">'.substr($closing_price_g."", -3);
-                                            $closing_price_c=substr($stop_loss."", 0,-3).'<a style="color:red">'.substr($stop_loss."", -3);
-                                            if( substr( $signal->asset, -3) == 'JPY'  ){
-                                                $pips_g = ($take_profit-$closing_price_g)*100;
-                                            }
-                                            else{
-                                                $pips_g = ($take_profit-$closing_price_g)*10000;
-                                            }
+                                            $closing_price_c=substr($signal->closing_price."", 0,-3).'<a style="color:#00cc00">'.substr($signal->closing_price."", -3);
+                                            $style_pips="style='color: #00ff00;font-weight: bold;'";
+                                        }else if($signal->result==1){
+                                            $closing_price_c=substr($signal->closing_price."", 0,-3).'<a style="color:red">'.substr($signal->closing_price."", -3);
+                                            $style_pips="style='color: #ff0000;font-weight: bold;'";
+                                        }else if($signal->result==3){
+                                            $closing_price_c=substr($signal->closing_price."", 0,-3).'<a style="color:blue">'.substr($signal->closing_price."", -3);
+                                            $style_pips="style='color: #0000ff;font-weight: bold;'";
                                         }
+                                        $pips_g=$signal->pips;
                                     }
                                 }
                                 else{
@@ -575,48 +591,38 @@ $cad = "";
                                     if($signal->result==0){   
                                         if($cod_op_g==1){
                                             $closing_price_g = $signal->price_buy;
-                                            if($closing_price_g>=$precio){
+                                            if($closing_price_g>=$signal->orden_pendiente){
                                                 $closing_price_c=substr($closing_price_g."", 0,-3).'<a style="color:#00cc00">'.substr($closing_price_g."", -3);
                                                 if( substr( $signal->asset, -3) == 'JPY'  ){
-                                                    $pips_g = ($stop_loss-$closing_price_g)*100;
+                                                    $pips_g = ($closing_price_g-$signal->orden_pendiente)*100;
                                                 }
                                                 else{
-                                                    $pips_g = ($stop_loss-$closing_price_g)*10000;
+                                                    $pips_g = ($closing_price_g-$signal->orden_pendiente)*10000;
                                                 }
                                                 $style_pips="style='color: #00cc00;font-weight: bold;'";
                                             }else{
                                                 $closing_price_c=substr($closing_price_g."", 0,-3).'<a style="color:red">'.substr($closing_price_g."", -3);
                                                 if( substr( $signal->asset, -3) == 'JPY'  ){
-                                                    $pips_g = ($take_profit-$closing_price_g)*100;
+                                                    $pips_g = ($closing_price_g-$signal->orden_pendiente)*100;
                                                 }
                                                 else{
-                                                    $pips_g = ($take_profit-$closing_price_g)*10000;
+                                                    $pips_g = ($closing_price_g-$signal->orden_pendiente)*10000;
                                                 }
                                                 $style_pips="style='color: #ff0000;font-weight: bold;'";
                                             }
                                         }
                                     }else{
-                                        $closing_price_g = $signal->price_signal; 
-                                        //if($closing_price_g>=$precio){
                                         if($signal->result==2){
-                                            //$closing_price_c=substr($closing_price_g."", 0,-3).'<a style="color:#00cc00">'.substr($closing_price_g."", -3);
-                                            $closing_price_c=substr($take_profit."", 0,-3).'<a style="color:#00cc00">'.substr($take_profit."", -3);
-                                            if( substr( $signal->asset, -3) == 'JPY'  ){
-                                                $pips_g = ($stop_loss-$closing_price_g)*100;
-                                            }
-                                            else{
-                                                $pips_g = ($stop_loss-$closing_price_g)*10000;
-                                            }
-                                        }else{
-                                            //$closing_price_c=substr($closing_price_g."", 0,-3).'<a style="color:red">'.substr($closing_price_g."", -3);
-                                            $closing_price_c=substr($stop_loss."", 0,-3).'<a style="color:red">'.substr($stop_loss."", -3);
-                                            if( substr( $signal->asset, -3) == 'JPY'  ){
-                                                $pips_g = ($take_profit-$closing_price_g)*100;
-                                            }
-                                            else{
-                                                $pips_g = ($take_profit-$closing_price_g)*10000;
-                                            }
+                                            $closing_price_c=substr($signal->closing_price."", 0,-3).'<a style="color:#00cc00">'.substr($signal->closing_price."", -3);
+                                            $style_pips="style='color: #00ff00;font-weight: bold;'";
+                                        }else if($signal->result==1){
+                                            $closing_price_c=substr($signal->closing_price."", 0,-3).'<a style="color:red">'.substr($signal->closing_price."", -3);
+                                            $style_pips="style='color: #ff0000;font-weight: bold;'";
+                                        }else if($signal->result==3){
+                                            $closing_price_c=substr($signal->closing_price."", 0,-3).'<a style="color:blue">'.substr($signal->closing_price."", -3);
+                                            $style_pips="style='color: #0000ff;font-weight: bold;'";
                                         }
+                                        $pips_g=$signal->pips;
                                     }
                                 }                            
                             }else{
@@ -644,29 +650,14 @@ $cad = "";
                                             $style_pips="style='color: #ff0000;font-weight: bold;'";
                                         }
                                     }else{
-                                        $closing_price_g = $signal->price_signal; 
-                                        //if($closing_price_g<=$precio){
                                         if($signal->result==2){
-                                            //$closing_price_c=substr($closing_price_g."", 0,-3).'<a style="color:#00cc00">'.substr($closing_price_g."", -3);
-                                            $closing_price_c=substr($take_profit."", 0,-3).'<a style="color:#00cc00">'.substr($take_profit."", -3);
-                                            if( substr( $signal->asset, -3) == 'JPY'  ){
-                                                $pips_g = ($take_profit-$precio)*100;
-                                            }
-                                            else{
-                                                $pips_g = ($take_profit-$precio)*10000;
-                                            }
-                                            //$pips_g=$signal->pips;
-                                        }else{
-                                            //$closing_price_c=substr($closing_price_g."", 0,-3).'<a style="color:red">'.substr($closing_price_g."", -3);
-                                            $closing_price_c=substr($stop_loss."", 0,-3).'<a style="color:red">'.substr($stop_loss."", -3);
-                                            if( substr( $signal->asset, -3) == 'JPY'  ){
-                                                $pips_g = ($stop_loss-$precio)*100;
-                                            }
-                                            else{
-                                                $pips_g = ($stop_loss-$precio)*10000;
-                                            }
-                                            //$pips_g=$signal->pips;
+                                            $closing_price_c=substr($signal->closing_price."", 0,-3).'<a style="color:#00cc00">'.substr($signal->closing_price."", -3);
+                                            $style_pips="style='color: #00ff00;font-weight: bold;'";
+                                        }else if($signal->result==1){
+                                            $closing_price_c=substr($signal->closing_price."", 0,-3).'<a style="color:red">'.substr($signal->closing_price."", -3);
+                                            $style_pips="style='color: #ff0000;font-weight: bold;'";
                                         }
+                                        $pips_g=$signal->pips;
                                     }
                                 }
                                 else{
@@ -693,37 +684,29 @@ $cad = "";
                                             $style_pips="style='color: #ff0000;font-weight: bold;'";
                                         }
                                     }else{
-                                        $closing_price_g = $signal->price_signal; 
-                                        //if($closing_price_g>=$precio){
                                         if($signal->result==2){
-                                            //$closing_price_c=substr($closing_price_g."", 0,-3).'<a style="color:#00cc00">'.substr($closing_price_g."", -3);
-                                            $closing_price_c=substr($take_profit."", 0,-3).'<a style="color:#00cc00">'.substr($take_profit."", -3);
-                                            if( substr( $signal->asset, -3) == 'JPY'  ){
-                                                $pips_g = ($take_profit-$precio)*100;
-                                            }
-                                            else{
-                                                $pips_g = ($take_profit-$precio)*10000;
-                                            }
-                                            //$pips_g=$signal->pips;
-                                        }else{
-                                            //$closing_price_c=substr($closing_price_g."", 0,-3).'<a style="color:red">'.substr($closing_price_g."", -3);
-                                            $closing_price_c=substr($stop_loss."", 0,-3).'<a style="color:red">'.substr($stop_loss."", -3);
-                                            if( substr( $signal->asset, -3) == 'JPY'  ){
-                                                $pips_g = ($stop_loss-$precio)*100;
-                                            }
-                                            else{
-                                                $pips_g = ($stop_loss-$precio)*10000;
-                                            }
-                                            //$pips_g=$signal->pips;
+                                            $closing_price_c=substr($signal->closing_price."", 0,-3).'<a style="color:#00cc00">'.substr($signal->closing_price."", -3);
+                                            $style_pips="style='color: #00ff00;font-weight: bold;'";
+                                        }else if($signal->result==1){
+                                            $closing_price_c=substr($signal->closing_price."", 0,-3).'<a style="color:red">'.substr($signal->closing_price."", -3);
+                                            $style_pips="style='color: #ff0000;font-weight: bold;'";
                                         }
+                                        $pips_g=$signal->pips;
                                     }
                                 }
                             }
+                            
+                            if($signal->result>0){
+                                $suma_rr_g+=$signal->take_profit/$signal->stop_loss;
+                                $num_g++;
+                            }
+                            
                             $pips_g=abs(round($pips_g,2));
                             /*if($signal->cancel==1){
                                 $pips_g=$signal->pips;
                             }*/
                                         $cad.='<tr class="active">
+                                                    <td>'.$num_g.'</td>
                                                    <td style="display:none">'.$signal->ID.'</td>
                                                    <td>'.$signal->date.' / '.$signal->time.'</td>
                                                     <!--<td>'.$signal->time.'</td>-->
@@ -735,7 +718,7 @@ $cad = "";
                                                     <td '.$style_ok_po.'>'.digitos($precio,$signal->cod_entry_price).'</td>
                                                     <td>'.$stop_loss.'</td>
                                                     <td>'.$take_profit.'</td>
-                                                    <td '.$class_quality.'>'.round($take_profit/$stop_loss,1).'<a href="'.$signal->rr_link.'">(?)</a></td>
+                                                    <td '.$class_quality.'>'.round($take_profit/$stop_loss,5).'<a href="'.$signal->rr_link.'">(?)</a></td>
                                                     <td>'.$closing_price_c.'</td>  
                                                     <td>'.$closing_time.'</td>
                                                     <!--<td>'.$result.'</td>-->
@@ -752,15 +735,22 @@ $cad = "";
                                                         $cad .='<td><span class="dashicons dashicons-unlock"></span></td>';
                                                     }
                                                     
+                                                    if($signal->result == 0){
+                                                        $cad .='<td><a href="javascript:void(0);" onclick="javascript:signal.update(\''.$signal->ID.'\')" title="Editar">Editar</a></td>';
+                                                    }else{
+                                                        $cad .='<td>Editar</span></td>';
+                                                    }
+                                                    
 //                                                    $cad .='<td><a href="javascript:void(0);" onclick="javascript:signal.delete(\''.$signal->ID.'\')" > <span class="dashicons dashicons-trash"></span></a></td>';
                                         $cad.='</tr>';
                                         
                             }
+                            $prom_rr_g=round($suma_rr_g/$num_g);
                         }
                         
                         $suma_pip = calculaSumaPip($cont_pips_bien,$cont_pips_mal); //funcion que calcula el total de pip ganados o perdidos
                         
-                        $cad .="<tr><td colspan='11' class='aling_total'><b>TOTAL</b></td>".$suma_pip."</tr>";
+                        $cad .="<tr><td colspan='8' class='aling_total'><b>TOTAL</b></td><td>".$prom_rr_g." ".$num_g."</td><td colspan='3'></td>".$suma_pip."</tr>";
 			$cad .='</tbody>
 			</table>
 		</div>
@@ -817,7 +807,9 @@ $flag=updateTableSignals_membership(); //beeps
 global $wpdb;
 $cont_pips_bien=0;
 $cont_pips_mal=0;
-
+$suma_rr_g=0;
+$num_g=0;
+$prom_rr_g=0;
 $value=getNroSignals('membership'); //obtnemos el numero de señales que se va a mostrar en la tabla membership
 
 $data = $wpdb->get_results( 
@@ -950,40 +942,35 @@ if($flag != ''){//beeps
                                             if($closing_price_g<=$precio){
                                                 $closing_price_c=substr($closing_price_g."", 0,-3).'<a style="color:#00cc00">'.substr($closing_price_g."", -3);
                                                 if( substr( $signal->asset, -3) == 'JPY'  ){
-                                                    $pips_g = ($stop_loss-$closing_price_g)*100;
+                                                    $pips_g = ($closing_price_g-$precio)*100;
                                                 }
                                                 else{
-                                                    $pips_g = ($stop_loss-$closing_price_g)*10000;
+                                                    $pips_g = ($closing_price_g-$precio)*10000;
                                                 }
+                                                $style_pips="style='color: #00cc00;font-weight: bold;'";
                                             }else{
                                                 $closing_price_c=substr($closing_price_g."", 0,-3).'<a style="color:red">'.substr($closing_price_g."", -3);
                                                 if( substr( $signal->asset, -3) == 'JPY'  ){
-                                                    $pips_g = ($take_profit-$closing_price_g)*100;
+                                                    $pips_g = ($closing_price_g-$precio)*100;
                                                 }
                                                 else{
-                                                    $pips_g = ($take_profit-$closing_price_g)*10000;
+                                                    $pips_g = ($closing_price_g-$precio)*10000;
                                                 }
+                                                $style_pips="style='color: #ff0000;font-weight: bold;'";
                                             }      
                                         }
                                     }else{
-                                        $closing_price_g = $signal->price_signal; 
-                                        if($closing_price_g<=$precio){
-                                            $closing_price_c=substr($closing_price_g."", 0,-3).'<a style="color:#00cc00">'.substr($closing_price_g."", -3);
-                                            if( substr( $signal->asset, -3) == 'JPY'  ){
-                                                $pips_g = ($stop_loss-$closing_price_g)*100;
-                                            }
-                                            else{
-                                                $pips_g = ($stop_loss-$closing_price_g)*10000;
-                                            }
-                                        }else{
-                                            $closing_price_c=substr($closing_price_g."", 0,-3).'<a style="color:red">'.substr($closing_price_g."", -3);
-                                            if( substr( $signal->asset, -3) == 'JPY'  ){
-                                                $pips_g = ($take_profit-$closing_price_g)*100;
-                                            }
-                                            else{
-                                                $pips_g = ($take_profit-$closing_price_g)*10000;
-                                            }
+                                        if($signal->result==2){
+                                            $closing_price_c=substr($signal->closing_price."", 0,-3).'<a style="color:#00cc00">'.substr($signal->closing_price."", -3);
+                                            $style_pips="style='color: #00ff00;font-weight: bold;'";
+                                        }else if($signal->result==1){
+                                            $closing_price_c=substr($signal->closing_price."", 0,-3).'<a style="color:red">'.substr($signal->closing_price."", -3);
+                                            $style_pips="style='color: #ff0000;font-weight: bold;'";
+                                        }else if($signal->result==3){
+                                            $closing_price_c=substr($signal->closing_price."", 0,-3).'<a style="color:blue">'.substr($signal->closing_price."", -3);
+                                            $style_pips="style='color: #0000ff;font-weight: bold;'";
                                         }
+                                        $pips_g=$signal->pips;
                                     }
                                 }
                                 else{
@@ -991,43 +978,38 @@ if($flag != ''){//beeps
                                     if($signal->result==0){   
                                         if($cod_op_g==1){
                                             $closing_price_g = $signal->price_buy;
-                                            if($closing_price_g>=$precio){
+                                            if($closing_price_g>=$signal->orden_pendiente){
                                                 $closing_price_c=substr($closing_price_g."", 0,-3).'<a style="color:#00cc00">'.substr($closing_price_g."", -3);
                                                 if( substr( $signal->asset, -3) == 'JPY'  ){
-                                                    $pips_g = ($stop_loss-$closing_price_g)*100;
+                                                    $pips_g = ($closing_price_g-$signal->orden_pendiente)*100;
                                                 }
                                                 else{
-                                                    $pips_g = ($stop_loss-$closing_price_g)*10000;
+                                                    $pips_g = ($closing_price_g-$signal->orden_pendiente)*10000;
                                                 }
+                                                $style_pips="style='color: #00cc00;font-weight: bold;'";
                                             }else{
                                                 $closing_price_c=substr($closing_price_g."", 0,-3).'<a style="color:red">'.substr($closing_price_g."", -3);
                                                 if( substr( $signal->asset, -3) == 'JPY'  ){
-                                                    $pips_g = ($take_profit-$closing_price_g)*100;
+                                                    $pips_g = ($closing_price_g-$signal->orden_pendiente)*100;
                                                 }
                                                 else{
-                                                    $pips_g = ($take_profit-$closing_price_g)*10000;
+                                                    $pips_g = ($closing_price_g-$signal->orden_pendiente)*10000;
                                                 }
+                                                $style_pips="style='color: #ff0000;font-weight: bold;'";
                                             }
                                         }
                                     }else{
-                                        $closing_price_g = $signal->price_signal; 
-                                        if($closing_price_g>=$precio){
-                                            $closing_price_c=substr($closing_price_g."", 0,-3).'<a style="color:#00cc00">'.substr($closing_price_g."", -3);
-                                            if( substr( $signal->asset, -3) == 'JPY'  ){
-                                                $pips_g = ($stop_loss-$closing_price_g)*100;
-                                            }
-                                            else{
-                                                $pips_g = ($stop_loss-$closing_price_g)*10000;
-                                            }
-                                        }else{
-                                            $closing_price_c=substr($closing_price_g."", 0,-3).'<a style="color:red">'.substr($closing_price_g."", -3);
-                                            if( substr( $signal->asset, -3) == 'JPY'  ){
-                                                $pips_g = ($take_profit-$closing_price_g)*100;
-                                            }
-                                            else{
-                                                $pips_g = ($take_profit-$closing_price_g)*10000;
-                                            }
+                                        if($signal->result==2){
+                                            $closing_price_c=substr($signal->closing_price."", 0,-3).'<a style="color:#00cc00">'.substr($signal->closing_price."", -3);
+                                            $style_pips="style='color: #00ff00;font-weight: bold;'";
+                                        }else if($signal->result==1){
+                                            $closing_price_c=substr($signal->closing_price."", 0,-3).'<a style="color:red">'.substr($signal->closing_price."", -3);
+                                            $style_pips="style='color: #ff0000;font-weight: bold;'";
+                                        }else if($signal->result==3){
+                                            $closing_price_c=substr($signal->closing_price."", 0,-3).'<a style="color:blue">'.substr($signal->closing_price."", -3);
+                                            $style_pips="style='color: #0000ff;font-weight: bold;'";
                                         }
+                                        $pips_g=$signal->pips;
                                     }
                                 }                            
                             }else{
@@ -1038,39 +1020,31 @@ if($flag != ''){//beeps
                                         if($closing_price_g<=$precio){
                                             $closing_price_c=substr($closing_price_g."", 0,-3).'<a style="color:#00cc00">'.substr($closing_price_g."", -3);
                                             if( substr( $signal->asset, -3) == 'JPY'  ){
-                                                $pips_g = ($stop_loss-$closing_price_g)*100;
+                                                $pips_g = ($closing_price_g-$precio)*100;
                                             }
                                             else{
-                                                $pips_g = ($stop_loss-$closing_price_g)*10000;
+                                                $pips_g = ($closing_price_g-$precio)*10000;
                                             }
+                                            $style_pips="style='color: #00cc00;font-weight: bold;'";
                                         }else{
                                             $closing_price_c=substr($closing_price_g."", 0,-3).'<a style="color:red">'.substr($closing_price_g."", -3);
                                             if( substr( $signal->asset, -3) == 'JPY'  ){
-                                                $pips_g = ($take_profit-$closing_price_g)*100;
+                                                $pips_g = ($closing_price_g-$precio)*100;
                                             }
                                             else{
-                                                $pips_g = ($take_profit-$closing_price_g)*10000;
+                                                $pips_g = ($closing_price_g-$precio)*10000;
                                             }
+                                            $style_pips="style='color: #ff0000;font-weight: bold;'";
                                         }
                                     }else{
-                                        $closing_price_g = $signal->price_signal; 
-                                        if($closing_price_g<=$precio){
-                                            $closing_price_c=substr($closing_price_g."", 0,-3).'<a style="color:#00cc00">'.substr($closing_price_g."", -3);
-                                            if( substr( $signal->asset, -3) == 'JPY'  ){
-                                                $pips_g = ($stop_loss-$closing_price_g)*100;
-                                            }
-                                            else{
-                                                $pips_g = ($stop_loss-$closing_price_g)*10000;
-                                            }
-                                        }else{
-                                            $closing_price_c=substr($closing_price_g."", 0,-3).'<a style="color:red">'.substr($closing_price_g."", -3);
-                                            if( substr( $signal->asset, -3) == 'JPY'  ){
-                                                $pips_g = ($take_profit-$closing_price_g)*100;
-                                            }
-                                            else{
-                                                $pips_g = ($take_profit-$closing_price_g)*10000;
-                                            }
+                                        if($signal->result==2){
+                                            $closing_price_c=substr($signal->closing_price."", 0,-3).'<a style="color:#00cc00">'.substr($signal->closing_price."", -3);
+                                            $style_pips="style='color: #00ff00;font-weight: bold;'";
+                                        }else if($signal->result==1){
+                                            $closing_price_c=substr($signal->closing_price."", 0,-3).'<a style="color:red">'.substr($signal->closing_price."", -3);
+                                            $style_pips="style='color: #ff0000;font-weight: bold;'";
                                         }
+                                        $pips_g=$signal->pips;
                                     }
                                 }
                                 else{
@@ -1080,41 +1054,37 @@ if($flag != ''){//beeps
                                         if($closing_price_g>=$precio){
                                             $closing_price_c=substr($closing_price_g."", 0,-3).'<a style="color:#00cc00">'.substr($closing_price_g."", -3);
                                             if( substr( $signal->asset, -3) == 'JPY'  ){
-                                                $pips_g = ($stop_loss-$closing_price_g)*100;
+                                                $pips_g = ($closing_price_g-$precio)*100;
                                             }
                                             else{
-                                                $pips_g = ($stop_loss-$closing_price_g)*10000;
+                                                $pips_g = ($closing_price_g-$precio)*10000;
                                             }
+                                            $style_pips="style='color: #00cc00;font-weight: bold;'";
                                         }else{
                                             $closing_price_c=substr($closing_price_g."", 0,-3).'<a style="color:red">'.substr($closing_price_g."", -3);
                                             if( substr( $signal->asset, -3) == 'JPY'  ){
-                                                $pips_g = ($take_profit-$closing_price_g)*100;
+                                                $pips_g = ($closing_price_g-$precio)*100;
                                             }
                                             else{
-                                                $pips_g = ($take_profit-$closing_price_g)*10000;
+                                                $pips_g = ($closing_price_g-$precio)*10000;
                                             }
+                                            $style_pips="style='color: #ff0000;font-weight: bold;'";
                                         }
                                     }else{
-                                        $closing_price_g = $signal->price_signal; 
-                                        if($closing_price_g>=$precio){
-                                            $closing_price_c=substr($closing_price_g."", 0,-3).'<a style="color:#00cc00">'.substr($closing_price_g."", -3);
-                                            if( substr( $signal->asset, -3) == 'JPY'  ){
-                                                $pips_g = ($stop_loss-$closing_price_g)*100;
-                                            }
-                                            else{
-                                                $pips_g = ($stop_loss-$closing_price_g)*10000;
-                                            }
-                                        }else{
-                                            $closing_price_c=substr($closing_price_g."", 0,-3).'<a style="color:red">'.substr($closing_price_g."", -3);
-                                            if( substr( $signal->asset, -3) == 'JPY'  ){
-                                                $pips_g = ($take_profit-$closing_price_g)*100;
-                                            }
-                                            else{
-                                                $pips_g = ($take_profit-$closing_price_g)*10000;
-                                            }
+                                        if($signal->result==2){
+                                            $closing_price_c=substr($signal->closing_price."", 0,-3).'<a style="color:#00cc00">'.substr($signal->closing_price."", -3);
+                                            $style_pips="style='color: #00ff00;font-weight: bold;'";
+                                        }else if($signal->result==1){
+                                            $closing_price_c=substr($signal->closing_price."", 0,-3).'<a style="color:red">'.substr($signal->closing_price."", -3);
+                                            $style_pips="style='color: #ff0000;font-weight: bold;'";
                                         }
+                                        $pips_g=$signal->pips;
                                     }
                                 }
+                            }
+                            if($signal->result>0){
+                                $suma_rr_g+=$signal->take_profit/$signal->stop_loss;
+                                $num_g++;
                             }
                             $pips_g=abs(round($pips_g,2));
                                         $cad.='<tr class="active">
@@ -1129,7 +1099,7 @@ if($flag != ''){//beeps
                                                     <td '.$style_ok_po.'>'.digitos($precio,$signal->cod_entry_price).'</td>
                                                     <td>'.$stop_loss.'</td>
                                                     <td>'.$take_profit.'</td>
-                                                    <td '.$class_quality.'>'.$signal->quality.'</td>
+                                                    <td '.$class_quality.'>'.round($take_profit/$stop_loss,1).'<a href="'.$signal->rr_link.'">(?)</a></td>
                                                     <td>'.$closing_price_c.'</td>
                                                     <td>'.$closing_time.'</td>
                                                     <!--<td>'.$result.'</td>-->
@@ -1137,11 +1107,12 @@ if($flag != ''){//beeps
                                         $cad.='</tr>';
                                         
                             }
+                            $prom_rr_g=round($suma_rr_g/$num_g);
                         }
                         
                         $suma_pip = calculaSumaPip($cont_pips_bien,$cont_pips_mal); //funcion que calcula el total de pip ganados o perdidos
                         
-                        $cad .="<tr><td colspan='11' class='aling_total'><b>TOTAL</b></td>".$suma_pip."</tr>";
+                        $cad .="<tr><td colspan='7' class='aling_total'><b>TOTAL</b></td><td>".$prom_rr_g."</td><td colspan='3'>".$suma_pip."</tr>";
 			$cad .='</tbody>
 			</table>
 		</div>
@@ -1157,7 +1128,9 @@ updateTableSignals();
 global $wpdb;
 $cont_pips_bien=0;
 $cont_pips_mal=0;
-
+$suma_rr_g=0;
+$num_g=0;
+$prom_rr_g=0;
 $value=getNroSignals('home'); //obtnemos el numero de señales que se va a mostrar en la tabla home
 
 $data = $wpdb->get_results( 
@@ -1283,40 +1256,35 @@ $cad = "";
                                             if($closing_price_g<=$precio){
                                                 $closing_price_c=substr($closing_price_g."", 0,-3).'<a style="color:#00cc00">'.substr($closing_price_g."", -3);
                                                 if( substr( $signal->asset, -3) == 'JPY'  ){
-                                                    $pips_g = ($stop_loss-$closing_price_g)*100;
+                                                    $pips_g = ($closing_price_g-$precio)*100;
                                                 }
                                                 else{
-                                                    $pips_g = ($stop_loss-$closing_price_g)*10000;
+                                                    $pips_g = ($closing_price_g-$precio)*10000;
                                                 }
+                                                $style_pips="style='color: #00cc00;font-weight: bold;'";
                                             }else{
                                                 $closing_price_c=substr($closing_price_g."", 0,-3).'<a style="color:red">'.substr($closing_price_g."", -3);
                                                 if( substr( $signal->asset, -3) == 'JPY'  ){
-                                                    $pips_g = ($take_profit-$closing_price_g)*100;
+                                                    $pips_g = ($closing_price_g-$precio)*100;
                                                 }
                                                 else{
-                                                    $pips_g = ($take_profit-$closing_price_g)*10000;
+                                                    $pips_g = ($closing_price_g-$precio)*10000;
                                                 }
+                                                $style_pips="style='color: #ff0000;font-weight: bold;'";
                                             }      
                                         }
                                     }else{
-                                        $closing_price_g = $signal->price_signal; 
-                                        if($closing_price_g<=$precio){
-                                            $closing_price_c=substr($closing_price_g."", 0,-3).'<a style="color:#00cc00">'.substr($closing_price_g."", -3);
-                                            if( substr( $signal->asset, -3) == 'JPY'  ){
-                                                $pips_g = ($stop_loss-$closing_price_g)*100;
-                                            }
-                                            else{
-                                                $pips_g = ($stop_loss-$closing_price_g)*10000;
-                                            }
-                                        }else{
-                                            $closing_price_c=substr($closing_price_g."", 0,-3).'<a style="color:red">'.substr($closing_price_g."", -3);
-                                            if( substr( $signal->asset, -3) == 'JPY'  ){
-                                                $pips_g = ($take_profit-$closing_price_g)*100;
-                                            }
-                                            else{
-                                                $pips_g = ($take_profit-$closing_price_g)*10000;
-                                            }
+                                        if($signal->result==2){
+                                            $closing_price_c=substr($signal->closing_price."", 0,-3).'<a style="color:#00cc00">'.substr($signal->closing_price."", -3);
+                                            $style_pips="style='color: #00ff00;font-weight: bold;'";
+                                        }else if($signal->result==1){
+                                            $closing_price_c=substr($signal->closing_price."", 0,-3).'<a style="color:red">'.substr($signal->closing_price."", -3);
+                                            $style_pips="style='color: #ff0000;font-weight: bold;'";
+                                        }else if($signal->result==3){
+                                            $closing_price_c=substr($signal->closing_price."", 0,-3).'<a style="color:blue">'.substr($signal->closing_price."", -3);
+                                            $style_pips="style='color: #0000ff;font-weight: bold;'";
                                         }
+                                        $pips_g=$signal->pips;
                                     }
                                 }
                                 else{
@@ -1324,43 +1292,38 @@ $cad = "";
                                     if($signal->result==0){   
                                         if($cod_op_g==1){
                                             $closing_price_g = $signal->price_buy;
-                                            if($closing_price_g>=$precio){
+                                            if($closing_price_g>=$signal->orden_pendiente){
                                                 $closing_price_c=substr($closing_price_g."", 0,-3).'<a style="color:#00cc00">'.substr($closing_price_g."", -3);
                                                 if( substr( $signal->asset, -3) == 'JPY'  ){
-                                                    $pips_g = ($stop_loss-$closing_price_g)*100;
+                                                    $pips_g = ($closing_price_g-$signal->orden_pendiente)*100;
                                                 }
                                                 else{
-                                                    $pips_g = ($stop_loss-$closing_price_g)*10000;
+                                                    $pips_g = ($closing_price_g-$signal->orden_pendiente)*10000;
                                                 }
+                                                $style_pips="style='color: #00cc00;font-weight: bold;'";
                                             }else{
                                                 $closing_price_c=substr($closing_price_g."", 0,-3).'<a style="color:red">'.substr($closing_price_g."", -3);
                                                 if( substr( $signal->asset, -3) == 'JPY'  ){
-                                                    $pips_g = ($take_profit-$closing_price_g)*100;
+                                                    $pips_g = ($closing_price_g-$signal->orden_pendiente)*100;
                                                 }
                                                 else{
-                                                    $pips_g = ($take_profit-$closing_price_g)*10000;
+                                                    $pips_g = ($closing_price_g-$signal->orden_pendiente)*10000;
                                                 }
+                                                $style_pips="style='color: #ff0000;font-weight: bold;'";
                                             }
                                         }
                                     }else{
-                                        $closing_price_g = $signal->price_signal; 
-                                        if($closing_price_g>=$precio){
-                                            $closing_price_c=substr($closing_price_g."", 0,-3).'<a style="color:#00cc00">'.substr($closing_price_g."", -3);
-                                            if( substr( $signal->asset, -3) == 'JPY'  ){
-                                                $pips_g = ($stop_loss-$closing_price_g)*100;
-                                            }
-                                            else{
-                                                $pips_g = ($stop_loss-$closing_price_g)*10000;
-                                            }
-                                        }else{
-                                            $closing_price_c=substr($closing_price_g."", 0,-3).'<a style="color:red">'.substr($closing_price_g."", -3);
-                                            if( substr( $signal->asset, -3) == 'JPY'  ){
-                                                $pips_g = ($take_profit-$closing_price_g)*100;
-                                            }
-                                            else{
-                                                $pips_g = ($take_profit-$closing_price_g)*10000;
-                                            }
+                                        if($signal->result==2){
+                                            $closing_price_c=substr($signal->closing_price."", 0,-3).'<a style="color:#00cc00">'.substr($signal->closing_price."", -3);
+                                            $style_pips="style='color: #00ff00;font-weight: bold;'";
+                                        }else if($signal->result==1){
+                                            $closing_price_c=substr($signal->closing_price."", 0,-3).'<a style="color:red">'.substr($signal->closing_price."", -3);
+                                            $style_pips="style='color: #ff0000;font-weight: bold;'";
+                                        }else if($signal->result==3){
+                                            $closing_price_c=substr($signal->closing_price."", 0,-3).'<a style="color:blue">'.substr($signal->closing_price."", -3);
+                                            $style_pips="style='color: #0000ff;font-weight: bold;'";
                                         }
+                                        $pips_g=$signal->pips;
                                     }
                                 }                            
                             }else{
@@ -1371,39 +1334,31 @@ $cad = "";
                                         if($closing_price_g<=$precio){
                                             $closing_price_c=substr($closing_price_g."", 0,-3).'<a style="color:#00cc00">'.substr($closing_price_g."", -3);
                                             if( substr( $signal->asset, -3) == 'JPY'  ){
-                                                $pips_g = ($stop_loss-$closing_price_g)*100;
+                                                $pips_g = ($closing_price_g-$precio)*100;
                                             }
                                             else{
-                                                $pips_g = ($stop_loss-$closing_price_g)*10000;
+                                                $pips_g = ($closing_price_g-$precio)*10000;
                                             }
+                                            $style_pips="style='color: #00cc00;font-weight: bold;'";
                                         }else{
                                             $closing_price_c=substr($closing_price_g."", 0,-3).'<a style="color:red">'.substr($closing_price_g."", -3);
                                             if( substr( $signal->asset, -3) == 'JPY'  ){
-                                                $pips_g = ($take_profit-$closing_price_g)*100;
+                                                $pips_g = ($closing_price_g-$precio)*100;
                                             }
                                             else{
-                                                $pips_g = ($take_profit-$closing_price_g)*10000;
+                                                $pips_g = ($closing_price_g-$precio)*10000;
                                             }
+                                            $style_pips="style='color: #ff0000;font-weight: bold;'";
                                         }
                                     }else{
-                                        $closing_price_g = $signal->price_signal; 
-                                        if($closing_price_g<=$precio){
-                                            $closing_price_c=substr($closing_price_g."", 0,-3).'<a style="color:#00cc00">'.substr($closing_price_g."", -3);
-                                            if( substr( $signal->asset, -3) == 'JPY'  ){
-                                                $pips_g = ($stop_loss-$closing_price_g)*100;
-                                            }
-                                            else{
-                                                $pips_g = ($stop_loss-$closing_price_g)*10000;
-                                            }
-                                        }else{
-                                            $closing_price_c=substr($closing_price_g."", 0,-3).'<a style="color:red">'.substr($closing_price_g."", -3);
-                                            if( substr( $signal->asset, -3) == 'JPY'  ){
-                                                $pips_g = ($take_profit-$closing_price_g)*100;
-                                            }
-                                            else{
-                                                $pips_g = ($take_profit-$closing_price_g)*10000;
-                                            }
+                                        if($signal->result==2){
+                                            $closing_price_c=substr($signal->closing_price."", 0,-3).'<a style="color:#00cc00">'.substr($signal->closing_price."", -3);
+                                            $style_pips="style='color: #00ff00;font-weight: bold;'";
+                                        }else if($signal->result==1){
+                                            $closing_price_c=substr($signal->closing_price."", 0,-3).'<a style="color:red">'.substr($signal->closing_price."", -3);
+                                            $style_pips="style='color: #ff0000;font-weight: bold;'";
                                         }
+                                        $pips_g=$signal->pips;
                                     }
                                 }
                                 else{
@@ -1413,41 +1368,37 @@ $cad = "";
                                         if($closing_price_g>=$precio){
                                             $closing_price_c=substr($closing_price_g."", 0,-3).'<a style="color:#00cc00">'.substr($closing_price_g."", -3);
                                             if( substr( $signal->asset, -3) == 'JPY'  ){
-                                                $pips_g = ($stop_loss-$closing_price_g)*100;
+                                                $pips_g = ($closing_price_g-$precio)*100;
                                             }
                                             else{
-                                                $pips_g = ($stop_loss-$closing_price_g)*10000;
+                                                $pips_g = ($closing_price_g-$precio)*10000;
                                             }
+                                            $style_pips="style='color: #00cc00;font-weight: bold;'";
                                         }else{
                                             $closing_price_c=substr($closing_price_g."", 0,-3).'<a style="color:red">'.substr($closing_price_g."", -3);
                                             if( substr( $signal->asset, -3) == 'JPY'  ){
-                                                $pips_g = ($take_profit-$closing_price_g)*100;
+                                                $pips_g = ($closing_price_g-$precio)*100;
                                             }
                                             else{
-                                                $pips_g = ($take_profit-$closing_price_g)*10000;
+                                                $pips_g = ($closing_price_g-$precio)*10000;
                                             }
+                                            $style_pips="style='color: #ff0000;font-weight: bold;'";
                                         }
                                     }else{
-                                        $closing_price_g = $signal->price_signal; 
-                                        if($closing_price_g>=$precio){
-                                            $closing_price_c=substr($closing_price_g."", 0,-3).'<a style="color:#00cc00">'.substr($closing_price_g."", -3);
-                                            if( substr( $signal->asset, -3) == 'JPY'  ){
-                                                $pips_g = ($stop_loss-$closing_price_g)*100;
-                                            }
-                                            else{
-                                                $pips_g = ($stop_loss-$closing_price_g)*10000;
-                                            }
-                                        }else{
-                                            $closing_price_c=substr($closing_price_g."", 0,-3).'<a style="color:red">'.substr($closing_price_g."", -3);
-                                            if( substr( $signal->asset, -3) == 'JPY'  ){
-                                                $pips_g = ($take_profit-$closing_price_g)*100;
-                                            }
-                                            else{
-                                                $pips_g = ($take_profit-$closing_price_g)*10000;
-                                            }
+                                        if($signal->result==2){
+                                            $closing_price_c=substr($signal->closing_price."", 0,-3).'<a style="color:#00cc00">'.substr($signal->closing_price."", -3);
+                                            $style_pips="style='color: #00ff00;font-weight: bold;'";
+                                        }else if($signal->result==1){
+                                            $closing_price_c=substr($signal->closing_price."", 0,-3).'<a style="color:red">'.substr($signal->closing_price."", -3);
+                                            $style_pips="style='color: #ff0000;font-weight: bold;'";
                                         }
+                                        $pips_g=$signal->pips;
                                     }
                                 }
+                            }
+                            if($signal->result>0){
+                                $suma_rr_g+=$signal->take_profit/$signal->stop_loss;
+                                $num_g++;
                             }
                             $pips_g=abs(round($pips_g,2));
                                         $cad.='<tr class="active">
@@ -1462,7 +1413,7 @@ $cad = "";
                                                     <td '.$style_ok_po.'>'.digitos($precio,$signal->cod_entry_price).'</td>
                                                     <td>'.$stop_loss.'</td>
                                                     <td>'.$take_profit.'</td>
-                                                    <td '.$class_quality.'>'.$signal->quality.'</td>
+                                                    <td '.$class_quality.'>'.round($take_profit/$stop_loss,1).'<a href="'.$signal->rr_link.'">(?)</a></td>
                                                     <td>'.$closing_price_c.'</td>
                                                     <td>'.$closing_time.'</td>
                                                     <!--<td>'.$result.'</td>-->
@@ -1470,11 +1421,12 @@ $cad = "";
                                         $cad.='</tr>';
                                         
                             }
+                            $prom_rr_g=round($suma_rr_g/$num_g);
                         }
                         
                         $suma_pip = calculaSumaPip($cont_pips_bien,$cont_pips_mal); //funcion que calcula el total de pip ganados o perdidos
                         
-                        $cad .="<tr><td colspan='11' class='aling_total'><b>TOTAL</b></td>".$suma_pip."</tr>";
+                        $cad .="<tr><td colspan='7' class='aling_total'><b>TOTAL</b></td><td>".$prom_rr_g."</td><td colspan='3'>".$suma_pip."</tr>";
 			$cad .='</tbody>
 			</table>
 		</div>
@@ -1750,7 +1702,7 @@ add_action('wp_ajax_update_precios', 'actualizaPrecios');  //funcion que actuliz
 //Esta funcion actualiza los precios de las monedas
 function actualizaPrecios(){
     global $wpdb;
-    //$ch = curl_init('https://forex.1forge.com/1.0.3/quotes?pairs=EURUSD,GBPUSD,AUDUSD,NZDUSD,USDCAD,USDJPY,EURJPY,EURAUD,GBPJPY,GBPAUD,AUDNZD,AUDJPY&api_key=T6xtYb1asOJv3dktmqCYGFbckRMP8Ugm');
+    $ch = curl_init('https://forex.1forge.com/1.0.3/quotes?pairs=EURUSD,GBPUSD,AUDUSD,NZDUSD,USDCAD,USDJPY,EURJPY,EURAUD,GBPJPY,GBPAUD,AUDNZD,AUDJPY&api_key=T6xtYb1asOJv3dktmqCYGFbckRMP8Ugm');
     //$ch = curl_init('https://forex.1forge.com/1.0.3/quotes?pairs=EURUSD,GBPUSD,AUDUSD,NZDUSD,USDCAD,USDJPY,EURJPY,EURAUD,GBPJPY,GBPAUD,AUDNZD,AUDJPY&api_key=49rv3u9Xjdohn74vlhirYMkk9O1UPVEF');
     //$ch = curl_init('https://forex.1forge.com/1.0.3/quotes?pairs=EURUSD,GBPUSD,AUDUSD,NZDUSD,USDCAD,USDJPY,EURJPY,EURAUD,GBPJPY,GBPAUD,AUDNZD,AUDJPY&api_key=sPXBxhUWSVjiRlZGG5MmFbW4ooIN1zqF');
     //$ch = curl_init('https://forex.1forge.com/1.0.3/quotes?pairs=EURUSD,GBPUSD,AUDUSD,NZDUSD,USDCAD,USDJPY,EURJPY,EURAUD,GBPJPY,GBPAUD,AUDNZD,AUDJPY&api_key=1XSbz2osTYy4hJILXnIPI18BsNgOnco7');
@@ -1905,8 +1857,10 @@ function closeMarket(){
                 //$pips=abs(round($pips * 10)/10);
                 $pips=abs(round($pips,2));
                 
+                $closing_price_g = $precio_actual;
+                
                 $table_signals = $wpdb->prefix . "signals";
-                $wpdb->update($table_signals, array('result' => $resultado,'pips' =>$pips,'closing_price'=>$price_signal,'cancel'=>1), array('ID' => $id_signal));        
+                $wpdb->update($table_signals, array('result' => $resultado,'pips' =>$pips,'closing_price' =>$closing_price_g,'cancel'=>1), array('ID' => $id_signal));        
             }
 
 
@@ -1967,12 +1921,16 @@ function updateTableSignals() {
             $asset = $signal->asset;
             $tipo_signal = $signal->type_of_order;
             $address = $signal->address;
+            
             $take_profit = $signal->take_profit;
             $stop_loss = $signal->stop_loss;
+            
             $resultado = $signal->result;
             $orden_pendiente = $signal->orden_pendiente;
             $price_signal=$signal->price_signal;
             $cod_op=$signal->cod_op;
+            
+            $cod_price=$signal->cod_entry_price;
 
             $resultado = calculaResultadoSeñal($id,$tipo_signal, $address, $take_profit, $stop_loss, $signal->price_sell, $signal->price_buy,$orden_pendiente,$cod_op);
 
@@ -2000,6 +1958,9 @@ function updateTableSignals() {
                 //$pips=abs(round($pips * 10)/10);
                 $pips=abs(round($pips,2));
                 
+                $precio_actual=generaPriceSignal($cod_price,$tipo_signal,$address); //Obtiene el precio actual de la moneda
+                $closing_price_g = $precio_actual;//EL CLOSING PRICE ES ES EL PRECIO QUE VARIA  
+                
                 //$pips=abs($pips);
                 //generamos la hora en que llego su fin de la señal
                 date_default_timezone_set("Europe/Berlin"); //muestra la fecha y hora de La Paz Bolivia
@@ -2007,7 +1968,7 @@ function updateTableSignals() {
                 
                 $table_signals = $wpdb->prefix . "signals";
 //                $wpdb->update($table_signals, array('result' => $resultado,'pips' =>$pips), array('ID' => $signal->ID));
-                $wpdb->update($table_signals, array('result' => $resultado,'pips' =>$pips,'closing_price'=>$price_signal,'closing_time'=>$closing_time), array('ID' => $signal->ID));
+                $wpdb->update($table_signals, array('result' => $resultado,'pips' =>$pips,'closing_price' =>$closing_price_g,'closing_time'=>$closing_time), array('ID' => $signal->ID));
                 }
             }
         }
@@ -2126,14 +2087,18 @@ function updateTableSignals_membership() {
             $asset = $signal->asset;
             $tipo_signal = $signal->type_of_order;
             $address = $signal->address;
+            
             $take_profit = $signal->take_profit;
             $stop_loss = $signal->stop_loss;
+            
             $resultado = $signal->result;
             $orden_pendiente = $signal->orden_pendiente;
             $price_signal=$signal->price_signal;
             $cod_op=$signal->cod_op;
             $cancel=$signal->cancel;
             $beep=$signal->beep;
+            
+            $cod_price=$signal->cod_entry_price;
             
             $resultado = calculaResultadoSeñal_membership($id,$tipo_signal, $address, $take_profit, $stop_loss, $signal->price_sell, $signal->price_buy,$orden_pendiente,$cod_op);
             
@@ -2190,12 +2155,15 @@ function updateTableSignals_membership() {
                 $pips=abs(round($pips,2));
                 $table_signals = $wpdb->prefix . "signals";
                 
+                $precio_actual=generaPriceSignal($cod_price,$tipo_signal,$address); //Obtiene el precio actual de la moneda
+                $closing_price_g = $precio_actual;//EL CLOSING PRICE ES ES EL PRECIO QUE VARIA  
+                
                 //generamos la hora en que llego su fin de la señal
                 date_default_timezone_set("Europe/Berlin"); //muestra la fecha y hora de La Paz Bolivia
                 $closing_time = date("H:i:s");
                 
 //                $wpdb->update($table_signals, array('result' => $resultado,'pips' =>$pips), array('ID' => $signal->ID));
-                  $wpdb->update($table_signals, array('result' => $resultado,'pips' =>$pips,'closing_price'=>$price_signal,'closing_time'=>$closing_time), array('ID' => $signal->ID));
+                  $wpdb->update($table_signals, array('result' => $resultado,'pips' =>$pips,'closing_price' =>$closing_price_g,'closing_time'=>$closing_time), array('ID' => $signal->ID));
                   
                }
             }

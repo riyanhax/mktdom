@@ -46,6 +46,8 @@ function signal_install()
 	`cod_entry_price` INT(11) NULL DEFAULT '0',
 	`stop_loss` FLOAT NULL DEFAULT '0',
 	`take_profit` FLOAT NULL DEFAULT '0',
+        `stop_loss_edit` FLOAT NULL DEFAULT '0',
+        `take_profit_edit` FLOAT NULL DEFAULT '0',
 	`orden_pendiente` FLOAT NULL DEFAULT '0',
 	`quality` VARCHAR(50) NULL DEFAULT NULL COLLATE 'utf8_spanish2_ci',
 	`result` CHAR(50) NULL DEFAULT NULL COLLATE 'utf8_spanish2_ci',
@@ -54,11 +56,13 @@ function signal_install()
         `pips` FLOAT NULL DEFAULT '0',
         `cod_op` TINYINT(1) NOT NULL DEFAULT '0',
         `beep` TINYINT(1) NOT NULL DEFAULT '0',
-        `closing_price` FLOAT NULL DEFAULT '0',
+        `closing_price` TIME NULL DEFAULT NULL,
         `closing_time` TIME NULL DEFAULT NULL,
         `method` VARCHAR(255) NULL DEFAULT NULL COLLATE 'utf8_spanish2_ci',
         `method_link` VARCHAR(255) NULL DEFAULT NULL COLLATE 'utf8_spanish2_ci',
         `rr_link` VARCHAR(255) NULL DEFAULT NULL COLLATE 'utf8_spanish2_ci',
+        `image` BLOB,
+        `commentary` VARCHAR(50) NULL DEFAULT NULL COLLATE 'utf8_spanish2_ci',
 	PRIMARY KEY (`ID`)
         );";
     
@@ -203,153 +207,215 @@ function signal_page(){ //define el contenido de una pagina
     $signal_price = muestraMonedas();
   ?>
 <div id="divLoading"></div>
-  		<div class="wrap">
-  			<h1>Signal Interface</h1>
+<div class="wrap">
+    <h1>Signal Interface</h1>
                   
                         
-<div class="container-fluid">
+    <div class="container-fluid">
 	<div class="row">
-		<div class="col-md-12">
-			<div class="row">
-				<div class="col-md-4">
-   <!-- Nro de registros  -->
-   <?php 
-      $nro=muestraRegistro();
-      $nro_home=$nro[0]->nro_registros;
-      $nro_membership=$nro[1]->nro_registros;
-   ?>
-   <div class="row row_registros"><label>Nro. Home</label><input class="form-control nro_registro" id="nro_home"  type="number"  step=1 value="<?php echo $nro_home; ?>" /></div>
-   <div class="row row_registros"><label>Nro. Membership</label><input class="form-control nro_registro" id="nro_membership"  type="number"  step=1 value="<?php echo $nro_membership; ?>"  /></div>     
-   <div class="row row_registros"><button type="button" class="btn btn-success" id="btn-registros" style="margin-left: 38%">Save</button> </div>     
-				</div>
-                            <div class="col-md-4 border-form" style="width: 34.333%;">
-                                    <form role="form">
-                                            <div class="form-group">
-                                                <label class="control-label">Símbolo:</label>
-                                                <select class="form-control" id="select-simbolo">
-                                                    <?php if (count($signal_price) > 0) : ?>
-                                                       <?php foreach ($signal_price as $value): ?> 
-                                                              <!--<option label_sell="<?php // echo $value->price_sell; ?>" label_buy="<?php echo $value->price_buy; ?>" label_date="<?php echo $value->date_price; ?>" label_time="<?php echo $value->time_price; ?>" value="<?php echo $value->cod_entry_price; ?>" ><?php echo formatoCombroPrecios($value->asset);?></option>-->
-                                                              <option value="<?php echo $value->cod_entry_price; ?>" ><?php echo formatoCombroPrecios($value->asset);?></option>
-                                                        <?php endforeach; ?> 
-                                                    <?php endif; ?>
-                                                </select>
-                                            </div>
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="col-md-3">
+                        <!-- Nro de registros  -->
+                        <?php 
+                           $nro=muestraRegistro();
+                           $nro_home=$nro[0]->nro_registros;
+                           $nro_membership=$nro[1]->nro_registros;
+                        ?>
+                        <div class="row row_registros"><label>Nro. Home</label><input class="form-control nro_registro" id="nro_home"  type="number"  step=1 value="<?php echo $nro_home; ?>" /></div>
+                        <div class="row row_registros"><label>Nro. Membership</label><input class="form-control nro_registro" id="nro_membership"  type="number"  step=1 value="<?php echo $nro_membership; ?>"  /></div>     
+                        <div class="row row_registros"><button type="button" class="btn btn-success" id="btn-registros" style="margin-left: 38%">Save</button> </div>     
+                    </div>
+                    <div class="col-md-4 border-form" style="width: 34.333%;">
+                        <form role="form">
+                            <div class="form-group">
+                                <label class="control-label">Símbolo:</label>
+                                <select class="form-control" id="select-simbolo">
+                                    <?php if (count($signal_price) > 0) : ?>
+                                       <?php foreach ($signal_price as $value): ?> 
+                                              <!--<option label_sell="<?php // echo $value->price_sell; ?>" label_buy="<?php echo $value->price_buy; ?>" label_date="<?php echo $value->date_price; ?>" label_time="<?php echo $value->time_price; ?>" value="<?php echo $value->cod_entry_price; ?>" ><?php echo formatoCombroPrecios($value->asset);?></option>-->
+                                              <option value="<?php echo $value->cod_entry_price; ?>" ><?php echo formatoCombroPrecios($value->asset);?></option>
+                                        <?php endforeach; ?> 
+                                    <?php endif; ?>
+                                </select>
+                            </div>
 <!--                                        <div class="form-group"> 
-                                                <p><b>Sell:</b> <span id="sell_precio"></span>     <b>Buy:</b> <span id="buy_precio"></span>     <b>Date:</b> <span id="date_precio"></span> <b>Time:</b> <span id="time_precio"></span></p>  
-                                        </div>-->
-                                            <div class="form-group">
-                                                <label class="control-label">Calidad:</label>
-                                                <select class="form-control" id="select-calidad">
-                                                    <option value="1">1</option>
-                                                    <option value="2">2</option>
-                                                    <option value="3">3</option>
-                                                    <option value="4">4</option>
-                                                    <option value="5">5</option>
-                                                </select>
-                                            </div>    
+                                    <p><b>Sell:</b> <span id="sell_precio"></span>     <b>Buy:</b> <span id="buy_precio"></span>     <b>Date:</b> <span id="date_precio"></span> <b>Time:</b> <span id="time_precio"></span></p>  
+                            </div>-->
+                            <div class="form-group">
+                                <label class="control-label">Calidad:</label>
+                                <select class="form-control" id="select-calidad">
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
+                                </select>
+                            </div>    
 
 
-                                            <div class="form-group row"> <!-- class row ayuda a que los 2 input esten en la misma fila -->
-                                                <div class="col-md-6">
-                                                    <label for="label-stop-loss">
-                                                        Stop Loss
-                                                    </label>
-                                                    <input class="form-control" id="stop_loss" type="number"  step=1 />
-                                                
-                                                </div>
+                            <div class="form-group row"> <!-- class row ayuda a que los 2 input esten en la misma fila -->
+                                <div class="col-md-6">
+                                    <label for="label-stop-loss">Stop Loss</label>
+                                    <input class="form-control" id="stop_loss" type="number"  step=1 />
+                                </div>
 
-                                                <div class="col-md-6"> 
-                                                
-
-                                                    <label for="label-take-profit">
-                                                        Take profit
-                                                    </label>
-                                                    <input class="form-control" id="take_profit"  type="number"  step=1  />
-                                                </div>
-                                                <span id="error_tp_sl" class="text-error"></span>
-                                            </div>
+                                <div class="col-md-6"> 
+                                    <label for="label-take-profit">Take profit</label>
+                                    <input class="form-control" id="take_profit"  type="number"  step=1  />
+                                </div>
+                                <span id="error_tp_sl" class="text-error"></span>
+                            </div>
 
 <!--                                            <div class="form-group">
-                                                <label class="control-label">Comentario:</label>
-                                                <input type="text" class="form-control">
-                                            </div>-->
+                                    <label class="control-label">Comentario:</label>
+                                    <input type="text" class="form-control">
+                                </div>-->
 
-                                            <div class="form-group">
-                                                <label class="control-label">Tipo:</label>
-                                                <select class="form-control" id="tipo_signal">
-                                                    <option value="1">Ejecucion por Mercado</option>
-                                                    <option value="2">Orden Pendiente</option>
-                                                </select>
-                                            </div>    
-                                            <div class="form-group row"> <!-- class row ayuda a que los 2 input esten en la misma fila -->
-                                                <div class="col-md-6">
-                                                    <label for="label-stop-loss">
-                                                        Método
-                                                    </label>
-                                                    <input class="form-control" id="method_e" type="text" />
-                                                
-                                                </div>
+                            <div class="form-group">
+                                <label class="control-label">Tipo:</label>
+                                <select class="form-control" id="tipo_signal">
+                                    <option value="1">Ejecucion por Mercado</option>
+                                    <option value="2">Orden Pendiente</option>
+                                </select>
+                            </div>    
+                            <div class="form-group row"> <!-- class row ayuda a que los 2 input esten en la misma fila -->
+                                <div class="col-md-6">
+                                    <label for="label-stop-loss">Método</label>
+                                    <input class="form-control" id="method_e" type="text" />
+                                </div>
 
-                                                <div class="col-md-6"> 
-                                                
+                                <div class="col-md-6"> 
+                                    <label for="label-take-profit">Link</label>
+                                    <input class="form-control" id="method_link_e"  type="text"  />
+                                </div>
+                                <span id="error_tp_sl" class="text-error"></span>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label">R/R link</label>
+                                <input type="text" class="form-control" id="rr_link_g"/>
+                            </div>
+                            
+                            <div class="form-group" id="orden_pendiente" style="display:none">
+                                <label class="control-label">Orden Pendiente:</label>
+                                <select class="form-control" id="tipo_orden">
+                                    <option value="Buy Limit">Buy Limit</option>
+                                    <option value="Sell Limit">Sell Limit</option>
+                                    <option value="Buy Stop">Buy Stop</option>
+                                    <option value="Sell Stop">Sell Stop</option>
+                                </select>
+                            </div>
 
-                                                    <label for="label-take-profit">
-                                                        Link
-                                                    </label>
-                                                    <input class="form-control" id="method_link_e"  type="text"  />
-                                                </div>
-                                                <span id="error_tp_sl" class="text-error"></span>
-                                            </div>
-                                            <div class="form-group">
-                                                <label class="control-label">R/R link</label>
-                                                <input type="text" class="form-control" id="rr_link_g"/>
-                                            </div>
-                                        <div class="form-group" id="orden_pendiente" style="display:none">
-                                                <label class="control-label">Orden Pendiente:</label>
-                                                <select class="form-control" id="tipo_orden">
-                                                    <option value="Buy Limit">Buy Limit</option>
-                                                    <option value="Sell Limit">Sell Limit</option>
-                                                    <option value="Buy Stop">Buy Stop</option>
-                                                    <option value="Sell Stop">Sell Stop</option>
-                                                </select>
-                                        </div>
-                                            
-                                                <div id="at_price_principal" class="form-group" style="display:none">
-                                                    <div class="col-md-6">
-                                                    <label for="exampleInputPassword1">
-                                                        At price
-                                                    </label>
-                                                    <input class="form-control" id="at_price" type="number"  step=1 />
-                                                    </div>
-                                                    <!--<div class="col-md-6" style="margin-top: -36px;">-->
-                                                    <div class="col-md-6">
-                                                         <button type="button" class="btn btn-primary btn-md btn-at-price btn-signal-price" id="btn-at_price" style="margin-top: -36px;">
-                                                          Place
-                                                         </button> 
-                                                    </div>    
-                                                </div>       
-                                                <div class="clearfix"></div>
-                                                
-                                                    <button type="button" class="btn btn-primary btn-signal" id="btn-sell">
-                                                        Vender al Mercado
-                                                    </button> 
-                                                    <button type="button" class="btn btn-danger btn-signal" id="btn-buy">
-                                                        Comprar al Mercado
-                                                    </button>
-                                    </form>
-				</div>
-				<div class="col-md-4">
-				</div>
-			</div>
-		</div>
+                            <div id="at_price_principal" class="form-group" style="display:none">
+                                <div class="col-md-6">
+                                <label for="exampleInputPassword1">At price</label>
+                                <input class="form-control" id="at_price" type="number"  step=1 />
+                                </div>
+                                <!--<div class="col-md-6" style="margin-top: -36px;">-->
+                                <div class="col-md-6">
+                                    <button type="button" class="btn btn-primary btn-md btn-at-price btn-signal-price" id="btn-at_price" style="margin-top: -36px;">
+                                        Place
+                                    </button> 
+                                </div>    
+                            </div>       
+                            <div class="clearfix"></div>
+
+                            <button type="button" class="btn btn-primary btn-signal" id="btn-sell">
+                                Vender al Mercado
+                            </button> 
+                            <button type="button" class="btn btn-danger btn-signal" id="btn-buy">
+                                Comprar al Mercado
+                            </button>
+                        </form>
+                    </div>
+                    <div class="col-md-4 border-form" style="width: 34.333%;">
+                        <form role="form">
+                            <div class="form-group row"> <!-- class row ayuda a que los 2 input esten en la misma fila -->
+                                <div class="col-md-5">
+                                    <label for="label-stop-loss">¿Que publicar?</label>
+                                    <select class="form-control" id="publicacion">
+                                        <option value="1">Comentario</option>
+                                        <option value="2">Imagen</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-7"> 
+                                    <label for="label-take-profit" style="visibility:hidden;display: block;">Link</label>
+                                    <label class="btn btn-warning btn-signal" for="publi-imagen">Subir imagen</label>
+                                    <input class="form-control" id="publi-imagen"  type="file" style="display:none;" />
+                                </div>
+                            </div>
+                            <div class="form-group row">    
+                                <div class="col-md-12" > 
+                                    <label for="label-take-profit">Comentario</label>
+                                    <textarea rows="7" maxlength="240" class="form-control" id="publi-comentario" style="resize:none;"></textarea>
+                                </div>
+                                
+                                <span id="error_tp_sl" class="text-error"></span>
+                            </div>
+                            
+                        </form>
+                    </div>
+                </div>
+                
+                
+                <!-- ***********************************  BEGIN FORMULARIO UPDATE  ************************************  -->
+                
+                
+                <div class="row" >
+                    <div class="col-md-3"></div>
+                    <div class="col-md-4 border-form" style="width: 34.333%;padding-bottom: 5px;">
+                        <form role="form">
+                            <div class="form-group row" > <!-- class row ayuda a que los 2 input esten en la misma fila -->
+                                <div class="col-md-2">
+                                    <label for="label-stop-loss">N°</label>
+                                    <input class="form-control" id="num-signal" type="text" style="height:2.5em;"/>
+                                </div>
+                                <div class="col-md-5">
+                                    <label for="label-stop-loss">New Stop Loss</label>
+                                    <input class="form-control" id="stop-loss-edit" type="number"  step=1 style="height:2.5em;"/>
+                                </div>
+
+                                <div class="col-md-5"> 
+                                    <label for="label-take-profit">New Take profit</label>
+                                    <input class="form-control" id="take-profit-edit"  type="number"  step=1  style="height:2.5em;"/>
+                                </div>
+                                <!--<div class="col-md-2">
+                                    <label for="label-take-profit" style="display: block;">Imagen</label>
+                                    <label class="btn btn-warning btn-signal" for="publi-imagen">Subir imagen</label>
+                                    <input class="form-control" id="publi-imagen"  type="file" style="display:none;" />
+                                </div>
+                                
+                                <div class="col-md-2"> 
+                                    <label for="label-take-profit">Commentary</label>
+                                    <input class="form-control" id="Commentary"  type="text"  />
+                                </div>
+                                <div class="col-md-1" >
+                                    <label for="label-stop-loss">To post</label>
+                                    <input class="form-control" id="cbx-post" type="checkbox" />
+                                </div>-->
+                                
+                                <div class="col-md-1">
+                                    <label for="label-take-profit" style="visibility:hidden;">Link</label>
+                                    <button type="button" class="btn btn-primary " id="btn-update" >
+                                        Update
+                                    </button> 
+                                </div>
+                                
+                                <span id="error_tp_sl" class="text-error"></span>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="col-md-1">
+                    </div>
+                </div>
+            </div>
     	</div>
-</div>           
+    </div>           
                      <br>
                         <!--<div id="tabla-signal-admin"></div>     muestra toda la tabla de signal-->
                         <?php echo do_shortcode('[signals view="admin"]'); //muestra la tabla ?>
 
 
-  		</div>
+</div>
   <?php
 }
