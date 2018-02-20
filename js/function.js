@@ -375,3 +375,25 @@ var signal = {
         }
     }  
 };
+function actualizarTakeProfit_StopLoss(id_signal){
+    var stop_loss_edit = jQuery("#stop-loss-edit").val();
+    var take_profit_edit = jQuery("#take-profit-edit").val();
+    if (id_signal.length > 0) {
+        jQuery.post('/wp-admin/admin-ajax.php', {
+            action: 'actualiza',
+            id_signal:id_signal,
+            stop_loss_edit:stop_loss_edit,
+            take_profit_edit:take_profit_edit,
+        }, function(data, status) { 
+                if(status == 'success'){
+                    alert("Successfully update");
+                    alert(stop_loss_edit+'        '+take_profit_edit);
+                    jQuery("div#divLoading").removeClass('show');//elimina gif 
+                    var obj = JSON.parse(data);
+                    jQuery( "#tabla-signal-admin" ).html(obj );
+                }
+            }
+        );
+    }
+    
+}
