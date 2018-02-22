@@ -54,6 +54,7 @@ add_action('wp_ajax_cancelar', 'cancelaDatos');
 add_action('wp_ajax_actualiza', 'actualiza_TakeProfit_StopLoss');
 
 add_action( 'wp_ajax_stop_loss', 'switch_ls' );
+add_action( 'wp_ajax_take_profit', 'switch_tp' );
 //add_action('wp_ajax_consulta', 'consultaDatos'); //ajax no esta en marcha
 
 //Funcion que dverifica si exiten datos para realizar el bucle
@@ -91,6 +92,41 @@ function switch_ls() {
         foreach ( $data as $signal ){
             //$wpdb->query("UPDATE ".$wpdb->prefix ."signals SET ".$signal->switch_sl."=".$numero);
             $wpdb->query('update '.$table_signals.' set switch_sl='.$numero);
+            //$wpdb->update($table_signals, array('switch_sl'=>$numero), array('result' => 0));
+        }
+        
+    }
+    /*$cad = draw_table_signal();
+    echo json_encode($cad);
+    exit();*/
+    echo $numero;
+    wp_die();
+}
+
+function switch_tp() {
+	//global $wpdb; // this is how you get access to the database
+        //global $numero;
+	$numero = intval( $_POST['whatever'] );
+
+	//$numero += 10;
+
+        //echo $numero;
+
+	//wp_die(); // this is required to terminate immediately and return a proper response
+    
+        
+    global $wpdb;
+    $table_signals = $wpdb->prefix . "signals";
+    $data = $wpdb->get_results( 
+                "SELECT *
+                 FROM ".$wpdb->prefix ."signals t1
+                 INNER JOIN ".$wpdb->prefix ."signals_price t2 ON(t2.cod_entry_price = t1.cod_entry_price)
+                 ORDER BY ID desc"
+    ); 
+    if(count($data) > 0){ //validamos en caso de que no exista datos registrados en la BD
+        foreach ( $data as $signal ){
+            //$wpdb->query("UPDATE ".$wpdb->prefix ."signals SET ".$signal->switch_sl."=".$numero);
+            $wpdb->query('update '.$table_signals.' set switch_tp='.$numero);
             //$wpdb->update($table_signals, array('switch_sl'=>$numero), array('result' => 0));
         }
         
@@ -502,15 +538,11 @@ $cad = "";
 						</th>
                                                 <th class="text-center" onclick="enviadatos('.$numero.');">
                                                     STOP LOSS
-                                                    <div style="font-size: 8px;" id="st_g">(Original)</div>
+                                                    <div style="font-size: 8px;" id="sw_sl_g">(Original)</div>
 						</th>
-                                                <th class="text-center">
-							TAKE PROFIT
-                                                        <div style="font-size: 8px;">(Original)</div>
-						</th>
-                                                <th class="text-center" style="display:none;">
-							TAKE PROFIT
-                                                        <div style="font-size: 8px;">(Edited)</div>
+                                                <th class="text-center" onclick="switch_takeprofit('.$numero.')">
+                                                    TAKE PROFIT
+                                                    <div style="font-size: 8px;" id="sw_tp_g">(Original)</div>
 						</th>
 						<th class="text-center">
 							R/R
@@ -546,6 +578,7 @@ $cad = "";
                             $cod_op_g = $signal->cod_op;
                             $asset = $signal->asset;
                             $stop_loss_edit=$signal->stop_loss_edit;
+                            $take_profit_edit=$signal->take_profit_edit;
                             
                             if($signal->address == 'Pending Order'){ //validamos para que entry price muestre orden pendiente cuando sea el caso
                                 $precio=$signal->orden_pendiente;
@@ -783,7 +816,22 @@ $cad = "";
                                                             $cad.='<td>'.conviertePIP($asset,$signal->type_of_order,$signal->address,$precio,'SL',$stop_loss_edit).'</td>';
                                                         }
                                                     }
-                                                    $cad.='<td>'.$take_profit.'</td>';
+                                                    if($signal->switch_tp==0){
+                                                        if($take_profit_edit==0){
+                                                            $cad.='<td style="color:#ff0000">'.$take_profit.'</td>';
+                                                        }else{
+                                                            $cad.='<td>'.$take_profit.'</td>';
+                                                        }
+                                                    }else{
+                                                        //$cad.='<td>'.conviertePIP($asset,$signal->type_of_order,$signal->address,$precio,'SL',$take_profit_edit).'</td>';
+                                                        //$stop_loss=conviertePIP($asset,$signal->type_of_order,$signal->address,$precio,'SL',$take_profit_edit);
+                                                        if($take_profit_edit==0){
+                                                            $cad.='<td style="color:#ff0000">'.$take_profit.'</td>';
+                                                        }else{
+                                                            $cad.='<td>'.conviertePIP($asset,$signal->type_of_order,$signal->address,$precio,'TP',$take_profit_edit).'</td>';
+                                                        }
+                                                    }
+                                                    
                                                     
                                                     if($signal->switch_sl==0){
                                                         if($stop_loss_edit==0){
