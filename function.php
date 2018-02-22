@@ -848,19 +848,23 @@ $cad = "";
                                                         }
                                                     }
                                                     
-                                                    
-                                                    if($signal->switch_sl!=0 && $stop_loss_edit!=0){
-                                                        $var_sl=conviertePIP($asset,$signal->type_of_order,$signal->address,$precio,'SL',$stop_loss_edit);
+                                                    if($signal->address=="Pending Order" || $signal->cod_op=0){
+                                                        $cad.='<td '.$class_quality.'></td>';
                                                     }else{
-                                                        $var_sl=$stop_loss;
-                                                    }
-                                                    if($signal->switch_tp!=0 && $take_profit_edit!=0){
-                                                        $var_tp=conviertePIP($asset,$signal->type_of_order,$signal->address,$precio,'TP',$take_profit_edit);
-                                                    }else{
-                                                        $var_tp=$take_profit;
+                                                        if($signal->switch_sl!=0 && $stop_loss_edit!=0){
+                                                            $var_sl=conviertePIP($asset,$signal->type_of_order,$signal->address,$precio,'SL',$stop_loss_edit);
+                                                        }else{
+                                                            $var_sl=$stop_loss;
+                                                        }
+                                                        if($signal->switch_tp!=0 && $take_profit_edit!=0){
+                                                            $var_tp=conviertePIP($asset,$signal->type_of_order,$signal->address,$precio,'TP',$take_profit_edit);
+                                                        }else{
+                                                            $var_tp=$take_profit;
+                                                        }
+                                                        $cad.='<td '.$class_quality.'>'.round($var_tp/$var_sl,5).'<a href="'.$signal->rr_link.'">(?)</a></td>';
                                                     }
                                                     
-                                                    $cad.='<td '.$class_quality.'>'.round($var_tp/$var_sl,5).'<a href="'.$signal->rr_link.'">(?)</a></td>';
+                                                    
                                                     //$cad.='<td '.$class_quality.'>'.$var_tp.'  '.$var_sl.'<a href="'.$signal->rr_link.'">(?)</a></td>';
                                                     
                                                     $cad.='<td>'.$closing_price_c.'</td>  
