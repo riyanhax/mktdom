@@ -90,8 +90,8 @@ function switch_ls() {
     if(count($data) > 0){ //validamos en caso de que no exista datos registrados en la BD
         foreach ( $data as $signal ){
             //$wpdb->query("UPDATE ".$wpdb->prefix ."signals SET ".$signal->switch_sl."=".$numero);
-            //$wpdb->query('update '.$table_signals.' set switch_sl='.$numero);
-            $wpdb->update($table_signals, array('switch_sl'=>$numero), array('result' => 0));
+            $wpdb->query('update '.$table_signals.' set switch_sl='.$numero);
+            //$wpdb->update($table_signals, array('switch_sl'=>$numero), array('result' => 0));
         }
         
     }
@@ -545,6 +545,7 @@ $cad = "";
                             $take_profit = $signal->take_profit;
                             $cod_op_g = $signal->cod_op;
                             $asset = $signal->asset;
+                            $stop_loss_edit=$signal->stop_loss_edit;
                             
                             if($signal->address == 'Pending Order'){ //validamos para que entry price muestre orden pendiente cuando sea el caso
                                 $precio=$signal->orden_pendiente;
@@ -764,11 +765,14 @@ $cad = "";
                                                     <td class="color_text">'.$signal->asset.'</td>
                                                     <td ><a target="_blank" href="'.$signal->method_link.'">'.$signal->method.'</a></td>
                                                     <td '.$style_ok_po.'>'.digitos($precio,$signal->cod_entry_price).'</td>';
-                                                    if($signal->result==0 && $signal->switch_sl==0){
+                                                    
+                                                    
+                                        
+                                                    if($signal->switch_sl==0){
                                                         $cad.='<td>'.$stop_loss.'</td>';
                                                     }else{
-                                                        $stop_loss=$signal->stop_loss_edit;
-                                                        $cad.='<td>'.conviertePIP_EDIT($asset,$stop_loss,$precio).'</td>';
+                                                        $cad.='<td>'.conviertePIP($asset,$signal->type_of_order,$signal->address,$precio,'SL',$stop_loss_edit).'</td>';
+                                                        //$stop_loss=conviertePIP($asset,$signal->type_of_order,$signal->address,$precio,'SL',$stop_loss_edit);
                                                     }
                                                     $cad.='<td>'.$take_profit.'</td>
                                                     <td '.$class_quality.'>'.round($take_profit/$stop_loss,5).'<a href="'.$signal->rr_link.'">(?)</a></td>
@@ -1755,8 +1759,8 @@ add_action('wp_ajax_update_precios', 'actualizaPrecios');  //funcion que actuliz
 //Esta funcion actualiza los precios de las monedas
 function actualizaPrecios(){
     global $wpdb;
-    $ch = curl_init('https://forex.1forge.com/1.0.3/quotes?pairs=EURUSD,GBPUSD,AUDUSD,NZDUSD,USDCAD,USDJPY,EURJPY,EURAUD,GBPJPY,GBPAUD,AUDNZD,AUDJPY&api_key=T6xtYb1asOJv3dktmqCYGFbckRMP8Ugm');
-    //$ch = curl_init('https://forex.1forge.com/1.0.3/quotes?pairs=EURUSD,GBPUSD,AUDUSD,NZDUSD,USDCAD,USDJPY,EURJPY,EURAUD,GBPJPY,GBPAUD,AUDNZD,AUDJPY&api_key=49rv3u9Xjdohn74vlhirYMkk9O1UPVEF');
+    //$ch = curl_init('https://forex.1forge.com/1.0.3/quotes?pairs=EURUSD,GBPUSD,AUDUSD,NZDUSD,USDCAD,USDJPY,EURJPY,EURAUD,GBPJPY,GBPAUD,AUDNZD,AUDJPY&api_key=T6xtYb1asOJv3dktmqCYGFbckRMP8Ugm');
+    $ch = curl_init('https://forex.1forge.com/1.0.3/quotes?pairs=EURUSD,GBPUSD,AUDUSD,NZDUSD,USDCAD,USDJPY,EURJPY,EURAUD,GBPJPY,GBPAUD,AUDNZD,AUDJPY&api_key=49rv3u9Xjdohn74vlhirYMkk9O1UPVEF');
     //$ch = curl_init('https://forex.1forge.com/1.0.3/quotes?pairs=EURUSD,GBPUSD,AUDUSD,NZDUSD,USDCAD,USDJPY,EURJPY,EURAUD,GBPJPY,GBPAUD,AUDNZD,AUDJPY&api_key=sPXBxhUWSVjiRlZGG5MmFbW4ooIN1zqF');
     //$ch = curl_init('https://forex.1forge.com/1.0.3/quotes?pairs=EURUSD,GBPUSD,AUDUSD,NZDUSD,USDCAD,USDJPY,EURJPY,EURAUD,GBPJPY,GBPAUD,AUDNZD,AUDJPY&api_key=1XSbz2osTYy4hJILXnIPI18BsNgOnco7');
     //$ch = curl_init('https://forex.1forge.com/1.0.3/quotes?pairs=EURUSD,GBPUSD,AUDUSD,NZDUSD,USDCAD,USDJPY,EURJPY,EURAUD,GBPJPY,GBPAUD,AUDNZD,AUDJPY&api_key=XkcUf5UO1JTl6vKt3yeN3zTolQaCKNPU');
@@ -2107,21 +2111,74 @@ function conviertePIP($cod_asset,$tipo_signal,$signal,$precio_signal,$value,$sl_
         
         return $resultado;
 }
-function conviertePIP_EDIT($cod_asset,$sl_tp,$prec_sign){
-
+function conviertePIP_EDIT($cod_asset,$pips_edit,$precio,$type_order,$address,$sl_tp){
     //if( substr( $cod_asset, -3) != 'JPY'  ){
     if( $cod_asset == 6 || $cod_asset == 7 || $cod_asset == 9 || $cod_asset == 12){
-        $pip = (($prec_sign*100)-$sl_tp)/100;
-        $pip=round($pip,5); 
-        $pip=abs($pip);
+        $cad = $pips_edit/100;
+        //$cad=abs(round($cad * 100)/100); 
         //$cad=abs(round($cad,2)); 
     }else{
-        $pip = (($prec_sign*10000)-$sl_tp)/10000;
-        $pip=round($pip,5); //redondeo a 5 decimales
-        $pip=abs($pip);
+        $cad = $pips_edit/10000;
+        //$cad=abs(round($cad * 10000)/10000); //redondeo a 5 decimales
         //$cad=abs(round($cad,2));
     }
-    return $pip;
+    
+    $resultado=0;
+    switch ($type_order) {
+                    case 'Spot':
+                                       if ($address == 'Sell') {
+                                                 if($sl_tp == 'TP'){
+                                                     $resultado = $precio-$cad;
+                                                 }else{
+                                                     $resultado = $precio+$cad;
+                                                 }
+                                        } else {
+                                                if($sl_tp == 'TP'){
+                                                    $resultado = $precio+$cad;
+                                                }else{
+                                                    $resultado = $precio-$cad;
+                                                }
+                                        }
+                    break;
+                    
+                    case 'Buy Limit': 
+                                        if($address == 'SL' || $address == 'PO'){
+                                           $resultado = $precio-$cad;
+                                        }else{
+                                              $resultado = $precio+$cad; 
+                                            }
+                    break; 
+                
+                    case 'Sell Limit':
+                                        if($address == 'SL' || $address == 'PO'){
+                                           $resultado = $precio+$cad;
+                                         }else{
+                                               $resultado = $precio-$cad;
+                                             }
+                    break; 
+                
+                    case 'Buy Stop':
+                                        if($address == 'TP' || $address == 'PO'){
+                                           $resultado = $precio+$cad;
+                                        }else{
+                                                $resultado = $precio-$cad;
+                                            }
+                    break;    
+                    
+                    case 'Sell Stop':
+                                         if($address == 'TP' || $address == 'PO'){
+                                           $resultado = $precio-$cad;
+                                         }else{
+                                                $resultado = $precio+$cad;
+                                             }
+                    break; 
+                    
+                    default:
+                    break; 
+        }
+        
+        return $resultado;
+    
 }
 
 /* Shortcode que va a mostrar la tabla */
