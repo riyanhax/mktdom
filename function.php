@@ -769,10 +769,19 @@ $cad = "";
                                                     
                                         
                                                     if($signal->switch_sl==0){
-                                                        $cad.='<td>'.$stop_loss.'</td>';
+                                                        if($stop_loss_edit==0){
+                                                            $cad.='<td style="color:#ff0000">'.$stop_loss.'</td>';
+                                                        }else{
+                                                            $cad.='<td>'.$stop_loss.'</td>';
+                                                        }
                                                     }else{
-                                                        $cad.='<td>'.conviertePIP($asset,$signal->type_of_order,$signal->address,$precio,'SL',$stop_loss_edit).'</td>';
+                                                        //$cad.='<td>'.conviertePIP($asset,$signal->type_of_order,$signal->address,$precio,'SL',$stop_loss_edit).'</td>';
                                                         //$stop_loss=conviertePIP($asset,$signal->type_of_order,$signal->address,$precio,'SL',$stop_loss_edit);
+                                                        if($stop_loss_edit==0){
+                                                            $cad.='<td style="color:#ff0000">'.$stop_loss.'</td>';
+                                                        }else{
+                                                            $cad.='<td>'.conviertePIP($asset,$signal->type_of_order,$signal->address,$precio,'SL',$stop_loss_edit).'</td>';
+                                                        }
                                                     }
                                                     $cad.='<td>'.$take_profit.'</td>
                                                     <td '.$class_quality.'>'.round($take_profit/$stop_loss,5).'<a href="'.$signal->rr_link.'">(?)</a></td>
