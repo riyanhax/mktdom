@@ -411,7 +411,7 @@ function actualizarTakeProfit_StopLoss(){
     }
 }
 
-function editarDatosTP_SL_edit(id_signal,stop_loss,take_profit,num_g,precio,asset){
+function editarDatosTP_SL_edit(id_signal,stop_loss,take_profit,num_g,precio,asset){   
     if(asset==='JPY'){
         stop_loss=(stop_loss-precio)*100;
         take_profit=(take_profit-precio)*100;
@@ -425,7 +425,7 @@ function editarDatosTP_SL_edit(id_signal,stop_loss,take_profit,num_g,precio,asse
     jQuery("#stop-loss-edit").val(Math.abs(stop_loss));
     jQuery("#take-profit-edit").val(Math.abs(take_profit));
     jQuery("#id-signal").val(id_signal);
-    jQuery("#num-signal").val(num_g);
+    jQuery("#num-signal").val(num_g);  
 }
 var num=1;
 function enviadatos(numero){
