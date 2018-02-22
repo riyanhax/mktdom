@@ -500,6 +500,8 @@ $data = $wpdb->get_results(
                  INNER JOIN ".$wpdb->prefix ."signals_price t2 ON(t2.cod_entry_price = t1.cod_entry_price)
                  ORDER BY ID desc"
 ); 
+
+$ultimo=$wpdb->get_row('SELECT * FROM '.$wpdb->prefix .'signals ORDER BY ID desc LIMIT 1');
 $class_quality='';
 $cad = "";
 
@@ -510,7 +512,7 @@ $cad = "";
 				<thead>
 					<tr>
 						<th class="text-center">
-							N° 
+							'.$ultimo->switch_tp.'
 						</th>
                                                 <th class="text-center" style="display:none">
 							ID 
@@ -537,13 +539,21 @@ $cad = "";
 							ENTRY PRICE
 						</th>
                                                 <th class="text-center" onclick="enviadatos('.$numero.');">
-                                                    STOP LOSS
-                                                    <div style="font-size: 8px;" id="sw_sl_g">(Original)</div>
-						</th>
+                                                    STOP LOSS';
+                                                    if($ultimo->switch_sl==0){
+                                                        $cad.='<div style="font-size: 8px;" id="sw_sl_g">(Original)</div>';
+                                                    }else{
+                                                        $cad.='<div style="font-size: 8px;" id="sw_sl_g">(Edited)</div>';
+                                                    }
+						$cad.='</th>
                                                 <th class="text-center" onclick="switch_takeprofit('.$numero.')">
-                                                    TAKE PROFIT
-                                                    <div style="font-size: 8px;" id="sw_tp_g">(Original)</div>
-						</th>
+                                                    TAKE PROFIT';
+                                                    if($ultimo->switch_tp==0){
+                                                        $cad.='<div style="font-size: 8px;" id="sw_sl_g">(Original)</div>';
+                                                    }else{
+                                                        $cad.='<div style="font-size: 8px;" id="sw_sl_g">(Edited)</div>';
+                                                    }
+						$cad.='</th>
 						<th class="text-center">
 							R/R
 						</th>
@@ -561,6 +571,12 @@ $cad = "";
 						</th>';
 				$cad .= '<th class="text-center">
 					    ACTIONS
+					</th>';
+                                $cad .= '<th class="text-center">
+					    EDIT
+					</th>';
+                                $cad .= '<th class="text-center">
+					    
 					</th>';
 				   $cad .= '</tr>
 				</thead>';
@@ -865,15 +881,17 @@ $cad = "";
                                                     }else{
                                                         $cad .='<td><span class="dashicons dashicons-unlock"></span></td>';
                                                     }
-                                                    
+                                                    $cad .='<td>Icono</td>';
                                                     if($signal->result == 0){
-                                                        $cad .='<td><a href="javascript:void(0);" onclick="editarDatosTP_SL_edit(\''.$signal->ID.'\',\''.$signal->stop_loss.'\',\''.$signal->take_profit.'\',\''.$num_g.'\',\''.$precio.'\',\''.substr( $asset, -3).'\')" title="Editar">Editar</a></td>';
+                                                        $cad .='<td><a href="javascript:void(0);" id="btn_editar" onclick="editarDatosTP_SL_edit(\''.$signal->ID.'\',\''.$signal->stop_loss.'\',\''.$signal->take_profit.'\',\''.$num_g.'\',\''.$precio.'\',\''.substr( $asset, -3).'\')" title="Editar"><span class="dashicons dashicons-edit" style="color:#00cc00"></span></a></td>';
                                                     }else{
-                                                        $cad .='<td>Editar</span></td>';
+                                                        $cad .='<td>Editar<span class="dashicons dashicons-edit"></span></td>';
                                                     }
                                                     
 //                                                    $cad .='<td><a href="javascript:void(0);" onclick="javascript:signal.delete(\''.$signal->ID.'\')" > <span class="dashicons dashicons-trash"></span></a></td>';
-                                        $cad.='</tr>';
+                                        
+                                                    
+                                                    $cad.='</tr>';
                                         
                             }
                             $prom_rr_g=round($suma_rr_g/$num_rr_g);
