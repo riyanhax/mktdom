@@ -849,22 +849,19 @@ $cad = "";
                                                     }
                                                     
                                                     
-                                                    if($signal->switch_sl==0){
-                                                        if($stop_loss_edit==0){
-                                                            $cad.='<td '.$class_quality.'>'.round($take_profit/$stop_loss,5).'<a href="'.$signal->rr_link.'">(?)</a></td>';
-                                                        }else{
-                                                            $cad.='<td '.$class_quality.'>'.round($take_profit/$stop_loss,5).'<a href="'.$signal->rr_link.'">(?)</a></td>';
-                                                        }
+                                                    if($signal->switch_sl!=0 && $stop_loss_edit!=0){
+                                                        $var_sl=conviertePIP($asset,$signal->type_of_order,$signal->address,$precio,'SL',$stop_loss_edit);
                                                     }else{
-                                                        //$cad.='<td>'.conviertePIP($asset,$signal->type_of_order,$signal->address,$precio,'SL',$stop_loss_edit).'</td>';
-                                                        //$stop_loss=conviertePIP($asset,$signal->type_of_order,$signal->address,$precio,'SL',$stop_loss_edit);
-                                                        if($stop_loss_edit==0){
-                                                            $cad.='<td '.$class_quality.'>'.round($take_profit/$stop_loss,5).'<a href="'.$signal->rr_link.'">(?)</a></td>';
-                                                        }else{
-                                                            $cad.='<td '.$class_quality.'>'.round($take_profit/conviertePIP($asset,$signal->type_of_order,$signal->address,$precio,'SL',$stop_loss_edit),5).'<a href="'.$signal->rr_link.'">(?)</a></td>';
-                                                        }
+                                                        $var_sl=$stop_loss;
+                                                    }
+                                                    if($signal->switch_tp!=0 && $take_profit_edit!=0){
+                                                        $var_tp=conviertePIP($asset,$signal->type_of_order,$signal->address,$precio,'TP',$take_profit_edit);
+                                                    }else{
+                                                        $var_tp=$take_profit;
                                                     }
                                                     
+                                                    $cad.='<td '.$class_quality.'>'.round($var_tp/$var_sl,5).'<a href="'.$signal->rr_link.'">(?)</a></td>';
+                                                    //$cad.='<td '.$class_quality.'>'.$var_tp.'  '.$var_sl.'<a href="'.$signal->rr_link.'">(?)</a></td>';
                                                     
                                                     $cad.='<td>'.$closing_price_c.'</td>  
                                                     <td>'.$closing_time.'</td>
