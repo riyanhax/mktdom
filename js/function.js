@@ -427,5 +427,44 @@ function editarDatosTP_SL_edit(id_signal,stop_loss,take_profit,num_g,precio,asse
     jQuery("#id-signal").val(id_signal);
     jQuery("#num-signal").val(num_g);
 }
+var num=1;
+function enviadatos(numero){
+    if(num==1){
+        //jQuery( "#st_g" ).html('(Original)');
+        num=0;
+    }else{
+        //jQuery( "#st_g" ).html('(Edited)');
+        num=1;
+    }
+    var data = {
+            'action': 'stop_loss',
+            'whatever': num
+    };
+
+    // since 2.8 ajaxurl is always defined in the admin header and points to admin-ajax.php
+    jQuery.post(ajaxurl, data, function(response, status) {
+            //alert('Got this from the server: ' + response);
+            if(status == 'success'){
+                        alert("Successfully update "+response);
+                        //var obj = JSON.parse(data);
+                        //jQuery( "#entry_price" ).html(9);
+                    }
+            
+    });
+    /*jQuery.post('/wp-admin/admin-ajax.php', {
+        action: 'actualiza',
+        id_signal:id_signal,
+        stop_loss_edit:stop_loss_edit,
+        take_profit_edit:take_profit_edit,
+    }, function(data, status) { 
+            if(status == 'success'){
+                alert("Successfully update");
+                jQuery("div#divLoading").removeClass('show');//elimina gif 
+                var obj = JSON.parse(data);
+                jQuery( "#tabla-signal-admin" ).html(obj );
+            }
+        }
+    );*/
+}
 
 
