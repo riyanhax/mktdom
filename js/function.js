@@ -430,10 +430,10 @@ function editarDatosTP_SL_edit(id_signal,stop_loss,take_profit,num_g,precio,asse
 var num=1;
 function enviadatos(numero){
     if(num==1){
-        //jQuery( "#st_g" ).html('(Original)');
+        jQuery( "#sw_sl_g" ).html('(Original)');
         num=0;
     }else{
-        //jQuery( "#st_g" ).html('(Edited)');
+        jQuery( "#sw_sl_g" ).html('(Edited)');
         num=1;
     }
     var data = {
@@ -449,4 +449,24 @@ function enviadatos(numero){
     });
 }
 
-
+var num2=1;
+function switch_takeprofit(numero){
+    if(num2==1){
+        jQuery( "#sw_tp_g" ).html('(Original)');
+        num2=0;
+    }else{
+        jQuery( "#sw_tp_g" ).html('(Edited)');
+        num2=1;
+    }
+    var data = {
+            'action': 'take_profit',
+            'whatever': num2
+    };
+    jQuery.post(ajaxurl, data, function(response, status) {
+            if(status == 'success'){
+                        alert("Successfully update "+response);
+                        //var obj = JSON.parse(data);
+                        //jQuery( "#entry_price" ).html(9);
+                    }       
+    });
+}
