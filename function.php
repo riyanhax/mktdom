@@ -1,5 +1,5 @@
 <?php 
-
+$numero=1;
 add_action( 'admin_init', 'signals_styles' ); // cargar la hoja de estilos al entrar al plugin
 add_action( 'wp_enqueue_scripts', 'signals_styles' ); 
 
@@ -52,6 +52,8 @@ add_action('wp_ajax_registra', 'registraDatos');
 add_action('wp_ajax_elimina', 'eliminaDatos');
 add_action('wp_ajax_cancelar', 'cancelaDatos');
 add_action('wp_ajax_actualiza', 'actualiza_TakeProfit_StopLoss');
+
+add_action( 'wp_ajax_stop_loss', 'switch_ls' );
 //add_action('wp_ajax_consulta', 'consultaDatos'); //ajax no esta en marcha
 
 //Funcion que dverifica si exiten datos para realizar el bucle
@@ -64,6 +66,42 @@ add_action('wp_ajax_actualiza', 'actualiza_TakeProfit_StopLoss');
     echo json_encode($count);
     exit();
 }*/
+
+function switch_ls() {
+	//global $wpdb; // this is how you get access to the database
+        //global $numero;
+	$numero = intval( $_POST['whatever'] );
+
+	//$numero += 10;
+
+        //echo $numero;
+
+	//wp_die(); // this is required to terminate immediately and return a proper response
+    
+        
+    global $wpdb;
+    $table_signals = $wpdb->prefix . "signals";
+    $data = $wpdb->get_results( 
+                "SELECT *
+                 FROM ".$wpdb->prefix ."signals t1
+                 INNER JOIN ".$wpdb->prefix ."signals_price t2 ON(t2.cod_entry_price = t1.cod_entry_price)
+                 ORDER BY ID desc"
+    ); 
+    if(count($data) > 0){ //validamos en caso de que no exista datos registrados en la BD
+        foreach ( $data as $signal ){
+            //$wpdb->query("UPDATE ".$wpdb->prefix ."signals SET ".$signal->switch_sl."=".$numero);
+            //$wpdb->query('update '.$table_signals.' set switch_sl='.$numero);
+            $wpdb->update($table_signals, array('switch_sl'=>$numero), array('result' => 0));
+        }
+        
+    }
+    /*$cad = draw_table_signal();
+    echo json_encode($cad);
+    exit();*/
+    echo $numero;
+    wp_die();
+}
+
 function cancelaDatos(){
     global $wpdb;
     if (isset($_POST['action'])) {
@@ -418,6 +456,7 @@ $suma_rr_g=0;
 $num_rr_g=0;
 $prom_rr_g=0;
 $num_g=0;
+global $numero;
 
 $data = $wpdb->get_results( 
                 "SELECT *
@@ -461,15 +500,11 @@ $cad = "";
 						<th class="text-center">
 							ENTRY PRICE
 						</th>
-						<th class="text-center">
+                                                <th class="text-center" onclick="enviadatos('.$numero.');">
                                                     STOP LOSS
-                                                    <div style="font-size: 8px;">(Original)</div>
+                                                    <div style="font-size: 8px;" id="st_g">(Original)</div>
 						</th>
-                                                <th class="text-center" style="display:none;">
-                                                    STOP LOSS
-                                                    <div style="font-size: 8px;">(Edited)</div>
-						</th>
-						<th class="text-center">
+                                                <th class="text-center">
 							TAKE PROFIT
                                                         <div style="font-size: 8px;">(Original)</div>
 						</th>
@@ -728,9 +763,14 @@ $cad = "";
                                                     <td>'.$order_type_e.'</td>
                                                     <td class="color_text">'.$signal->asset.'</td>
                                                     <td ><a target="_blank" href="'.$signal->method_link.'">'.$signal->method.'</a></td>
-                                                    <td '.$style_ok_po.'>'.digitos($precio,$signal->cod_entry_price).'</td>
-                                                    <td>'.$stop_loss.'</td>
-                                                    <td>'.$take_profit.'</td>
+                                                    <td '.$style_ok_po.'>'.digitos($precio,$signal->cod_entry_price).'</td>';
+                                                    if($signal->result==0 && $signal->switch_sl==0){
+                                                        $cad.='<td>'.$stop_loss.'</td>';
+                                                    }else{
+                                                        $stop_loss=$signal->stop_loss_edit;
+                                                        $cad.='<td>'.conviertePIP_EDIT($asset,$stop_loss,$precio).'</td>';
+                                                    }
+                                                    $cad.='<td>'.$take_profit.'</td>
                                                     <td '.$class_quality.'>'.round($take_profit/$stop_loss,5).'<a href="'.$signal->rr_link.'">(?)</a></td>
                                                     <td>'.$closing_price_c.'</td>  
                                                     <td>'.$closing_time.'</td>
@@ -749,7 +789,7 @@ $cad = "";
                                                     }
                                                     
                                                     if($signal->result == 0){
-                                                        $cad .='<td><a href="javascript:void(0);" onclick="editarDatosTP_SL_edit(\''.$signal->ID.'\',\''.$stop_loss.'\',\''.$take_profit.'\',\''.$num_g.'\',\''.$precio.'\',\''.substr( $asset, -3).'\')" title="Editar">Editar</a></td>';
+                                                        $cad .='<td><a href="javascript:void(0);" onclick="editarDatosTP_SL_edit(\''.$signal->ID.'\',\''.$signal->stop_loss.'\',\''.$signal->take_profit.'\',\''.$num_g.'\',\''.$precio.'\',\''.substr( $asset, -3).'\')" title="Editar">Editar</a></td>';
                                                     }else{
                                                         $cad .='<td>Editar</span></td>';
                                                     }
@@ -2067,18 +2107,21 @@ function conviertePIP($cod_asset,$tipo_signal,$signal,$precio_signal,$value,$sl_
         
         return $resultado;
 }
-function conviertePIP_EDIT($cod_asset,$tipo_signal,$signal,$precio_signal,$value,$sl_tp){
+function conviertePIP_EDIT($cod_asset,$sl_tp,$prec_sign){
 
     //if( substr( $cod_asset, -3) != 'JPY'  ){
     if( $cod_asset == 6 || $cod_asset == 7 || $cod_asset == 9 || $cod_asset == 12){
-        $cad = $sl_tp/100;
-        $cad=abs(round($cad * 100)/100); 
+        $pip = (($prec_sign*100)-$sl_tp)/100;
+        $pip=round($pip,5); 
+        $pip=abs($pip);
         //$cad=abs(round($cad,2)); 
     }else{
-        $cad = $sl_tp/10000;
-        $cad=abs(round($cad * 10000)/10000); //redondeo a 5 decimales
+        $pip = (($prec_sign*10000)-$sl_tp)/10000;
+        $pip=round($pip,5); //redondeo a 5 decimales
+        $pip=abs($pip);
         //$cad=abs(round($cad,2));
     }
+    return $pip;
 }
 
 /* Shortcode que va a mostrar la tabla */
