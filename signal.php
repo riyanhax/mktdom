@@ -63,6 +63,9 @@ function signal_install()
         `rr_link` VARCHAR(255) NULL DEFAULT NULL COLLATE 'utf8_spanish2_ci',
         `image` BLOB,
         `commentary` VARCHAR(50) NULL DEFAULT NULL COLLATE 'utf8_spanish2_ci',
+        `switch_sl` TINYINT(1) NULL DEFAULT '0',
+        `switch_tp` TINYINT(1) NULL DEFAULT '0',
+        `updated` TINYINT(1) NULL DEFAULT '0',
 	PRIMARY KEY (`ID`)
         );";
     
