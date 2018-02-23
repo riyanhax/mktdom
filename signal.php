@@ -343,9 +343,17 @@ function signal_page(){ //define el contenido de una pagina
                                 </div>
                                 <div class="col-md-7"> 
                                     <label for="label-take-profit" style="visibility:hidden;display: block;">Link</label>
-                                    <label class="btn btn-warning btn-signal" for="publi-imagen">Subir imagen</label>
-                                    <input class="form-control" id="publi-imagen"  type="file" style="display:none;" />
+                                    <label class="btn btn-warning btn-signal" for="btn-imagen">Subir imagen</label>
+                                    <input class="form-control" id="btn-imagen"  type="file" style="display:none;" />
                                 </div>
+                            </div>
+                            <div class="form-group row">    
+                                <div class="col-md-12" >
+                                    <label id="nom-arch"></label>
+                                    <img id="image_g" style="max-width:100%; display:block;"/>
+                                </div>
+                                
+                                <span id="error_tp_sl" class="text-error"></span>
                             </div>
                             <div class="form-group row">    
                                 <div class="col-md-12" > 
@@ -354,6 +362,14 @@ function signal_page(){ //define el contenido de una pagina
                                 </div>
                                 
                                 <span id="error_tp_sl" class="text-error"></span>
+                            </div>
+                            <div class="form-group row">    
+                                <div class="col-md-10">
+                                    <label for="label-take-profit" style="visibility:hidden;">Link</label>
+                                    <button type="button" class="btn btn-primary " id="btn-update-publi" >
+                                        Actualizar publicación
+                                    </button> 
+                                </div>
                             </div>
                             
                         </form>
