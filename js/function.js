@@ -5,6 +5,7 @@ jQuery(document).ready(function() {
 //    setInterval(signalTable,300000); //actualizamos esta funcion cada hora
     /****************************/
     signalTable();
+    resetEdit();
 //    setInterval(signalTable,30000);
 //    
     var ID_SIGNAL=0;
@@ -291,6 +292,9 @@ function validarNroRegistros(){
 }
 
 function validar(){
+    jQuery("#btn-update").prop('disabled', true);
+    jQuery("#stop-loss-edit").prop('disabled', true);
+    jQuery("#take-profit-edit").prop('disabled', true);
     sl = jQuery("#stop_loss").val();
     tp = jQuery("#take_profit").val();
     at = jQuery("#at_price").val();
@@ -375,7 +379,15 @@ var signal = {
 };
 var signal = {
     cancel: function(id_signal,valor,cod_price,tipo_signal,signal,stop_loss,take_profit,price_signal,orden_pendiente,cod_op) {
-
+        jQuery("#stop-loss-edit").val('');
+        jQuery("#take-profit-edit").val('');
+        jQuery("#id-signal").val('');
+        jQuery("#num-signal").val(''); 
+        //jQuery('#btn-update').attr("disabled", true);
+        jQuery("#btn-update").prop('disabled', true);
+        jQuery("#stop-loss-edit").prop('disabled', true);
+        jQuery("#take-profit-edit").prop('disabled', true);
+        
         jQuery("div#divLoading").addClass('show'); //genera gif
         if (id_signal.length > 0) {
             jQuery.post('/wp-admin/admin-ajax.php', {
@@ -407,6 +419,7 @@ var signal = {
 };
 function actualizarTakeProfit_StopLoss(){
     var num1=0;
+    
     var id_signal = jQuery("#id-signal").val();
     var stop_loss_edit = jQuery("#stop-loss-edit").val();
     var take_profit_edit = jQuery("#take-profit-edit").val();
@@ -427,6 +440,13 @@ function actualizarTakeProfit_StopLoss(){
                     if(status == 'success'){
                         alert("Successfully update");
                         jQuery("div#divLoading").removeClass('show');//elimina gif 
+                        jQuery("#btn-update").prop('disabled', true);
+                        jQuery("#stop-loss-edit").prop('disabled', true);
+                        jQuery("#take-profit-edit").prop('disabled', true);
+                        jQuery("#id-signal").val('');
+                        jQuery("#stop-loss-edit").val('');
+                        jQuery("#take-profit-edit").val('');
+                        jQuery("#num-signal").val('');
                         var obj = JSON.parse(data);
                         jQuery( "#tabla-signal-admin" ).html(obj );
                     }
@@ -451,18 +471,21 @@ function editarDatosTP_SL_edit(id_signal,stop_loss,take_profit,num_g,precio,asse
     jQuery("#take-profit-edit").val(Math.abs(take_profit));
     jQuery("#id-signal").val(id_signal);
     jQuery("#num-signal").val(num_g); 
+    jQuery("#btn-update").prop('disabled', false);
+    jQuery("#stop-loss-edit").prop('disabled', false);
+    jQuery("#take-profit-edit").prop('disabled', false);
     
     var valor=1;
-    var data = {
+    var datos = {
             'action': 'switch_edit',
             'id_signal':id_signal,
             'whatever': valor
     };
-    jQuery.post(ajaxurl, data, function(response, status) {
+    jQuery.post(ajaxurl, datos, function(data, status) {
             if(status == 'success'){
-                        //alert("Successfully update edit   "+response);
-                        //var obj = JSON.parse(data);
-                        //jQuery( "#entry_price" ).html(9);
+                        //alert("Successfully update edit");
+                        var obj = JSON.parse(data);
+                        jQuery( "#tabla-signal-admin" ).html(obj );
                     }       
     });
 }
@@ -477,15 +500,15 @@ function switch_stoploss(){
         jQuery( "#sw_sl_g" ).html('(Edited)');
         num=1;
     }
-    var data = {
+    var datos = {
             'action': 'stop_loss',
             'whatever': num
     };
-    jQuery.post(ajaxurl, data, function(response, status) {
+    jQuery.post(ajaxurl, datos, function(data, status) {
             if(status == 'success'){
                         //alert("Successfully update "+response);
-                        //var obj = JSON.parse(data);
-                        //jQuery( "#entry_price" ).html(9);
+                        var obj = JSON.parse(data);
+                        jQuery( "#tabla-signal-admin" ).html(obj );
                     }       
     });
 }
@@ -499,15 +522,29 @@ function switch_takeprofit(){
         jQuery( "#sw_tp_g" ).html('(Edited)');
         num2=1;
     }
-    var data = {
+    var datos = {
             'action': 'take_profit',
             'whatever': num2
     };
-    jQuery.post(ajaxurl, data, function(response, status) {
-            if(status == 'success'){
+    jQuery.post(ajaxurl, datos, function(data, status) {
+            if(status === 'success'){
                         //alert("Successfully update "+response);
+                        var obj = JSON.parse(data);
+                        jQuery( "#tabla-signal-admin" ).html(obj );
+                    }       
+    });
+}
+
+
+function resetEdit(){
+    var datos = {
+            'action': 'resetEdit'
+    };
+    jQuery.post(ajaxurl, datos, function(data, status) {
+            if(status === 'success'){
+                        //alert("Successfully load");
                         //var obj = JSON.parse(data);
-                        //jQuery( "#entry_price" ).html(9);
+                        //jQuery( "#tabla-signal-admin" ).html(obj );
                     }       
     });
 }
