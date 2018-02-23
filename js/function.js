@@ -318,9 +318,33 @@ function validar(){
    }
 }
 
+jQuery(':file').change(function(){
+    //obtenemos un array con los datos del archivo
+    var file = jQuery("#btn-imagen")[0].files[0];
+    //obtenemos el nombre del archivo
+    var fileName = file.name;
+    //obtenemos la extensión del archivo
+    fileExtension = fileName.substring(fileName.lastIndexOf('.') + 1);
+    //obtenemos el tamaño del archivo
+    var fileSize = file.size;
+    //obtenemos el tipo de archivo image/png ejemplo
+    var fileType = file.type;
+    
+    jQuery('#nom-arch').text(fileName);
+    
+    if (this.files && this.files[0]) {
+        var reader = new FileReader();
+
+        reader.onload = function (e) {
+            jQuery('#image_g').attr('src', e.target.result);
+        };
+
+        reader.readAsDataURL(this.files[0]);
+    }
+});
+
+
 }); //end JQuery
-
-
 
 
 var signal = {
