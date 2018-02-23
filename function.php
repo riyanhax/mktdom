@@ -55,6 +55,7 @@ add_action('wp_ajax_actualiza', 'actualiza_TakeProfit_StopLoss');
 
 add_action( 'wp_ajax_stop_loss', 'switch_ls' );
 add_action( 'wp_ajax_take_profit', 'switch_tp' );
+add_action( 'wp_ajax_switch_edit', 'switch_edit' );
 //add_action('wp_ajax_consulta', 'consultaDatos'); //ajax no esta en marcha
 
 //Funcion que dverifica si exiten datos para realizar el bucle
@@ -68,18 +69,18 @@ add_action( 'wp_ajax_take_profit', 'switch_tp' );
     exit();
 }*/
 
+function upload_img(){
+    $target_path = "img/";
+    $target_path = $target_path . basename( $_FILES['uploadedfile']['name']); 
+    if(move_uploaded_file($_FILES['uploadedfile']['tmp_name'], $target_path)) { 
+        echo "El archivo ". basename( $_FILES['uploadedfile']['name']). " ha sido subido";
+    } else{
+        echo "Ha ocurrido un error, trate de nuevo!";
+    }
+}
+
 function switch_ls() {
-	//global $wpdb; // this is how you get access to the database
-        //global $numero;
-	$numero = intval( $_POST['whatever'] );
-
-	//$numero += 10;
-
-        //echo $numero;
-
-	//wp_die(); // this is required to terminate immediately and return a proper response
-    
-        
+    $numero = intval( $_POST['whatever'] );
     global $wpdb;
     $table_signals = $wpdb->prefix . "signals";
     $data = $wpdb->get_results( 
@@ -90,15 +91,10 @@ function switch_ls() {
     ); 
     if(count($data) > 0){ //validamos en caso de que no exista datos registrados en la BD
         foreach ( $data as $signal ){
-            //$wpdb->query("UPDATE ".$wpdb->prefix ."signals SET ".$signal->switch_sl."=".$numero);
             $wpdb->query('update '.$table_signals.' set switch_sl='.$numero);
-            //$wpdb->update($table_signals, array('switch_sl'=>$numero), array('result' => 0));
         }
         
     }
-    /*$cad = draw_table_signal();
-    echo json_encode($cad);
-    exit();*/
     echo $numero;
     wp_die();
 }
@@ -234,15 +230,49 @@ function actualiza_TakeProfit_StopLoss(){
             $id_signal=$_POST['id_signal'];
             $stop_loss_edit=$_POST['stop_loss_edit'];
             $take_profit_edit=$_POST['take_profit_edit'];
+            $valor=$_POST['valor'];
         
             $table_signals = $wpdb->prefix . "signals";
-            $wpdb->update($table_signals, array('stop_loss_edit' =>$stop_loss_edit,'take_profit_edit' =>$take_profit_edit), array('ID' => $id_signal));        
+            $wpdb->update($table_signals, array('stop_loss_edit' =>$stop_loss_edit,'take_profit_edit' =>$take_profit_edit,'switch_edit' =>$valor), array('ID' => $id_signal));     
        
             $cad = draw_table_signal();
             echo json_encode($cad);
             exit();
         }
     }
+}
+
+
+function switch_edit(){
+    global $wpdb;
+    if (isset($_POST['action'])) {
+        if($_POST['id_signal'] >0){
+            $id_signal=$_POST['id_signal'];
+            $sw_edit=$_POST['whatever'];
+        
+            $table_signals = $wpdb->prefix . "signals";
+            
+            $data = $wpdb->get_results( 
+                "SELECT *
+                 FROM ".$wpdb->prefix ."signals t1
+                 INNER JOIN ".$wpdb->prefix ."signals_price t2 ON(t2.cod_entry_price = t1.cod_entry_price)
+                 ORDER BY ID desc"
+            ); 
+            if(count($data) > 0){ //validamos en caso de que no exista datos registrados en la BD
+                foreach ( $data as $signal ){
+                    $wpdb->query('update '.$table_signals.' set switch_edit=0');
+                }
+            }
+            
+            $wpdb->update($table_signals, array('switch_edit' =>$sw_edit), array('ID' => $id_signal));        
+       
+            $cad = draw_table_signal();
+            //echo json_encode($cad);
+            //exit();
+            echo $sw_edit;
+            wp_die();
+        }
+    }    
 }
 
 function calculaMayor($valor1,$valor2,$precio_actual,$sl_tp){
@@ -882,7 +912,19 @@ $cad = "";
                                                     }else{
                                                         $cad .='<td><span class="dashicons dashicons-unlock"></span></td>';
                                                     }
-                                                    $cad .='<td>Icono</td>';
+                                                    
+                                                    
+                                                    
+                                                    if($signal->switch_edit == 1){
+                                                        $cad .='<td id="col_edit"><span class="dashicons dashicons-warning" style="color:#ffff00"></span></td>';
+                                                    }else{
+                                                        $cad .='<td id="col_edit"></td>';
+                                                    }
+                                                    
+                                                    
+                                                    
+                                                    
+                                                    
                                                     if($signal->result == 0){
                                                         $cad .='<td><a href="javascript:void(0);" id="btn_editar" onclick="editarDatosTP_SL_edit(\''.$signal->ID.'\',\''.$signal->stop_loss.'\',\''.$signal->take_profit.'\',\''.$num_g.'\',\''.$precio.'\',\''.substr( $asset, -3).'\')" title="Editar"><span class="dashicons dashicons-edit" style="color:#00cc00"></span></a></td>';
                                                     }else{
