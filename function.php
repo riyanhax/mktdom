@@ -69,16 +69,6 @@ add_action( 'wp_ajax_switch_edit', 'switch_edit' );
     exit();
 }*/
 
-function upload_img(){
-    $target_path = "img/";
-    $target_path = $target_path . basename( $_FILES['uploadedfile']['name']); 
-    if(move_uploaded_file($_FILES['uploadedfile']['tmp_name'], $target_path)) { 
-        echo "El archivo ". basename( $_FILES['uploadedfile']['name']). " ha sido subido";
-    } else{
-        echo "Ha ocurrido un error, trate de nuevo!";
-    }
-}
-
 function switch_ls() {
     $numero = intval( $_POST['whatever'] );
     global $wpdb;
@@ -568,7 +558,7 @@ $cad = "";
 						<th class="text-center">
 							ENTRY PRICE
 						</th>
-                                                <th class="text-center" onclick="enviadatos('.$numero.');">
+                                                <th class="text-center" onclick="switch_stoploss();">
                                                     STOP LOSS';
                                                     if($ultimo->switch_sl==0){
                                                         $cad.='<div style="font-size: 8px;" id="sw_sl_g">(Original)</div>';
@@ -576,7 +566,7 @@ $cad = "";
                                                         $cad.='<div style="font-size: 8px;" id="sw_sl_g">(Edited)</div>';
                                                     }
 						$cad.='</th>
-                                                <th class="text-center" onclick="switch_takeprofit('.$numero.')">
+                                                <th class="text-center" onclick="switch_takeprofit()">
                                                     TAKE PROFIT';
                                                     if($ultimo->switch_tp==0){
                                                         $cad.='<div style="font-size: 8px;" id="sw_sl_g">(Original)</div>';
