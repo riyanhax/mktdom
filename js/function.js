@@ -406,7 +406,7 @@ var signal = {
     }  
 };
 function actualizarTakeProfit_StopLoss(){
-    
+    var num1=0;
     var id_signal = jQuery("#id-signal").val();
     var stop_loss_edit = jQuery("#stop-loss-edit").val();
     var take_profit_edit = jQuery("#take-profit-edit").val();
@@ -422,6 +422,7 @@ function actualizarTakeProfit_StopLoss(){
                 id_signal:id_signal,
                 stop_loss_edit:stop_loss_edit,
                 take_profit_edit:take_profit_edit,
+                valor:num1
             }, function(data, status) { 
                     if(status == 'success'){
                         alert("Successfully update");
@@ -449,8 +450,24 @@ function editarDatosTP_SL_edit(id_signal,stop_loss,take_profit,num_g,precio,asse
     jQuery("#stop-loss-edit").val(Math.abs(stop_loss));
     jQuery("#take-profit-edit").val(Math.abs(take_profit));
     jQuery("#id-signal").val(id_signal);
-    jQuery("#num-signal").val(num_g);  
+    jQuery("#num-signal").val(num_g); 
+    
+    var valor=1;
+    var data = {
+            'action': 'switch_edit',
+            'id_signal':id_signal,
+            'whatever': valor
+    };
+    jQuery.post(ajaxurl, data, function(response, status) {
+            if(status == 'success'){
+                        alert("Successfully update edit   "+response);
+                        //var obj = JSON.parse(data);
+                        //jQuery( "#entry_price" ).html(9);
+                    }       
+    });
 }
+
+
 var num=1;
 function enviadatos(numero){
     if(num==1){
