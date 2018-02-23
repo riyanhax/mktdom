@@ -460,7 +460,7 @@ function editarDatosTP_SL_edit(id_signal,stop_loss,take_profit,num_g,precio,asse
     };
     jQuery.post(ajaxurl, data, function(response, status) {
             if(status == 'success'){
-                        alert("Successfully update edit   "+response);
+                        //alert("Successfully update edit   "+response);
                         //var obj = JSON.parse(data);
                         //jQuery( "#entry_price" ).html(9);
                     }       
@@ -469,7 +469,7 @@ function editarDatosTP_SL_edit(id_signal,stop_loss,take_profit,num_g,precio,asse
 
 
 var num=1;
-function enviadatos(numero){
+function switch_stoploss(){
     if(num==1){
         jQuery( "#sw_sl_g" ).html('(Original)');
         num=0;
@@ -483,7 +483,7 @@ function enviadatos(numero){
     };
     jQuery.post(ajaxurl, data, function(response, status) {
             if(status == 'success'){
-                        alert("Successfully update "+response);
+                        //alert("Successfully update "+response);
                         //var obj = JSON.parse(data);
                         //jQuery( "#entry_price" ).html(9);
                     }       
@@ -491,7 +491,7 @@ function enviadatos(numero){
 }
 
 var num2=1;
-function switch_takeprofit(numero){
+function switch_takeprofit(){
     if(num2==1){
         jQuery( "#sw_tp_g" ).html('(Original)');
         num2=0;
@@ -505,7 +505,7 @@ function switch_takeprofit(numero){
     };
     jQuery.post(ajaxurl, data, function(response, status) {
             if(status == 'success'){
-                        alert("Successfully update "+response);
+                        //alert("Successfully update "+response);
                         //var obj = JSON.parse(data);
                         //jQuery( "#entry_price" ).html(9);
                     }       
