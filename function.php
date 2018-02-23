@@ -47,7 +47,7 @@ function muestraMonedas(){
     
     
 }
-//hace referencia a funciones invocadas desde ajax
+//hace referencia a funciones invocadas desde ajax 
 add_action('wp_ajax_registra', 'registraDatos');
 add_action('wp_ajax_elimina', 'eliminaDatos');
 add_action('wp_ajax_cancelar', 'cancelaDatos');
@@ -56,6 +56,7 @@ add_action('wp_ajax_actualiza', 'actualiza_TakeProfit_StopLoss');
 add_action( 'wp_ajax_stop_loss', 'switch_ls' );
 add_action( 'wp_ajax_take_profit', 'switch_tp' );
 add_action( 'wp_ajax_switch_edit', 'switch_edit' );
+add_action( 'wp_ajax_resetEdit', 'resetEdit' );
 //add_action('wp_ajax_consulta', 'consultaDatos'); //ajax no esta en marcha
 
 //Funcion que dverifica si exiten datos para realizar el bucle
@@ -85,7 +86,9 @@ function switch_ls() {
         }
         
     }
-    echo $numero;
+    $cad = draw_table_signal();
+    echo json_encode($cad);
+    exit();
     wp_die();
 }
 
@@ -117,10 +120,9 @@ function switch_tp() {
         }
         
     }
-    /*$cad = draw_table_signal();
+    $cad = draw_table_signal();
     echo json_encode($cad);
-    exit();*/
-    echo $numero;
+    exit();
     wp_die();
 }
 
@@ -202,7 +204,7 @@ function cancelaDatos(){
                 $table_signals = $wpdb->prefix . "signals";
                 $wpdb->update($table_signals, array('result' => $resultado,'pips' =>$pips,'closing_price' =>$closing_price_g,'cancel'=>1,'closing_time'=>$closing_time), array('ID' => $id_signal));        
             }
-            
+            resetEdit();
             $cad = draw_table_signal();
             echo json_encode($cad);
             exit();
@@ -242,27 +244,33 @@ function switch_edit(){
         
             $table_signals = $wpdb->prefix . "signals";
             
-            $data = $wpdb->get_results( 
-                "SELECT *
-                 FROM ".$wpdb->prefix ."signals t1
-                 INNER JOIN ".$wpdb->prefix ."signals_price t2 ON(t2.cod_entry_price = t1.cod_entry_price)
-                 ORDER BY ID desc"
-            ); 
-            if(count($data) > 0){ //validamos en caso de que no exista datos registrados en la BD
-                foreach ( $data as $signal ){
-                    $wpdb->query('update '.$table_signals.' set switch_edit=0');
-                }
-            }
+            resetEdit();
             
             $wpdb->update($table_signals, array('switch_edit' =>$sw_edit), array('ID' => $id_signal));        
        
             $cad = draw_table_signal();
-            //echo json_encode($cad);
-            //exit();
-            echo $sw_edit;
+            echo json_encode($cad);
+            exit();
             wp_die();
         }
     }    
+}
+
+function resetEdit(){
+    global $wpdb;
+    $table_signals = $wpdb->prefix . "signals";
+            
+    $data = $wpdb->get_results( 
+        "SELECT *
+         FROM ".$wpdb->prefix ."signals t1
+         INNER JOIN ".$wpdb->prefix ."signals_price t2 ON(t2.cod_entry_price = t1.cod_entry_price)
+         ORDER BY ID desc"
+    ); 
+    if(count($data) > 0){ //validamos en caso de que no exista datos registrados en la BD
+        foreach ( $data as $signal ){
+            $wpdb->query('update '.$table_signals.' set switch_edit=0');
+        }
+    }
 }
 
 function calculaMayor($valor1,$valor2,$precio_actual,$sl_tp){
@@ -839,32 +847,33 @@ $cad = "";
                                         
                                                     if($signal->switch_sl==0){
                                                         if($stop_loss_edit==0){
-                                                            $cad.='<td style="color:#ff0000">'.$stop_loss.'</td>';
-                                                        }else{
                                                             $cad.='<td>'.$stop_loss.'</td>';
+                                                        }else{
+                                                            $cad.='<td style="color:#00ffff">'.$stop_loss.'</td>';
                                                         }
                                                     }else{
                                                         //$cad.='<td>'.conviertePIP($asset,$signal->type_of_order,$signal->address,$precio,'SL',$stop_loss_edit).'</td>';
                                                         //$stop_loss=conviertePIP($asset,$signal->type_of_order,$signal->address,$precio,'SL',$stop_loss_edit);
                                                         if($stop_loss_edit==0){
-                                                            $cad.='<td style="color:#ff0000">'.$stop_loss.'</td>';
+                                                            $cad.='<td>'.$stop_loss.'</td>';
                                                         }else{
-                                                            $cad.='<td>'.conviertePIP($asset,$signal->type_of_order,$signal->address,$precio,'SL',$stop_loss_edit).'</td>';
+                                                            $cad.='<td style="color:#00ffff">'.conviertePIP($asset,$signal->type_of_order,$signal->address,$precio,'SL',$stop_loss_edit).'</td>';
                                                         }
                                                     }
+                                                    
                                                     if($signal->switch_tp==0){
                                                         if($take_profit_edit==0){
-                                                            $cad.='<td style="color:#ff0000">'.$take_profit.'</td>';
-                                                        }else{
                                                             $cad.='<td>'.$take_profit.'</td>';
+                                                        }else{
+                                                            $cad.='<td style="color:#00ffff">'.$take_profit.'</td>';
                                                         }
                                                     }else{
                                                         //$cad.='<td>'.conviertePIP($asset,$signal->type_of_order,$signal->address,$precio,'SL',$take_profit_edit).'</td>';
                                                         //$stop_loss=conviertePIP($asset,$signal->type_of_order,$signal->address,$precio,'SL',$take_profit_edit);
                                                         if($take_profit_edit==0){
-                                                            $cad.='<td style="color:#ff0000">'.$take_profit.'</td>';
+                                                            $cad.='<td>'.$take_profit.'</td>';
                                                         }else{
-                                                            $cad.='<td>'.conviertePIP($asset,$signal->type_of_order,$signal->address,$precio,'TP',$take_profit_edit).'</td>';
+                                                            $cad.='<td style="color:#00ffff">'.conviertePIP($asset,$signal->type_of_order,$signal->address,$precio,'TP',$take_profit_edit).'</td>';
                                                         }
                                                     }
                                                     
@@ -1885,8 +1894,8 @@ add_action('wp_ajax_update_precios', 'actualizaPrecios');  //funcion que actuliz
 function actualizaPrecios(){
     global $wpdb;
     //$ch = curl_init('https://forex.1forge.com/1.0.3/quotes?pairs=EURUSD,GBPUSD,AUDUSD,NZDUSD,USDCAD,USDJPY,EURJPY,EURAUD,GBPJPY,GBPAUD,AUDNZD,AUDJPY&api_key=T6xtYb1asOJv3dktmqCYGFbckRMP8Ugm');
-    $ch = curl_init('https://forex.1forge.com/1.0.3/quotes?pairs=EURUSD,GBPUSD,AUDUSD,NZDUSD,USDCAD,USDJPY,EURJPY,EURAUD,GBPJPY,GBPAUD,AUDNZD,AUDJPY&api_key=49rv3u9Xjdohn74vlhirYMkk9O1UPVEF');
-    //$ch = curl_init('https://forex.1forge.com/1.0.3/quotes?pairs=EURUSD,GBPUSD,AUDUSD,NZDUSD,USDCAD,USDJPY,EURJPY,EURAUD,GBPJPY,GBPAUD,AUDNZD,AUDJPY&api_key=sPXBxhUWSVjiRlZGG5MmFbW4ooIN1zqF');
+    //$ch = curl_init('https://forex.1forge.com/1.0.3/quotes?pairs=EURUSD,GBPUSD,AUDUSD,NZDUSD,USDCAD,USDJPY,EURJPY,EURAUD,GBPJPY,GBPAUD,AUDNZD,AUDJPY&api_key=49rv3u9Xjdohn74vlhirYMkk9O1UPVEF');
+    $ch = curl_init('https://forex.1forge.com/1.0.3/quotes?pairs=EURUSD,GBPUSD,AUDUSD,NZDUSD,USDCAD,USDJPY,EURJPY,EURAUD,GBPJPY,GBPAUD,AUDNZD,AUDJPY&api_key=sPXBxhUWSVjiRlZGG5MmFbW4ooIN1zqF');
     //$ch = curl_init('https://forex.1forge.com/1.0.3/quotes?pairs=EURUSD,GBPUSD,AUDUSD,NZDUSD,USDCAD,USDJPY,EURJPY,EURAUD,GBPJPY,GBPAUD,AUDNZD,AUDJPY&api_key=1XSbz2osTYy4hJILXnIPI18BsNgOnco7');
     //$ch = curl_init('https://forex.1forge.com/1.0.3/quotes?pairs=EURUSD,GBPUSD,AUDUSD,NZDUSD,USDCAD,USDJPY,EURJPY,EURAUD,GBPJPY,GBPAUD,AUDNZD,AUDJPY&api_key=XkcUf5UO1JTl6vKt3yeN3zTolQaCKNPU');
     //$ch = curl_init('https://forex.1forge.com/1.0.3/quotes?pairs=EURUSD,GBPUSD,AUDUSD,NZDUSD,USDCAD,USDJPY,EURJPY,EURAUD,GBPJPY,GBPAUD,AUDNZD,AUDJPY&api_key=5kypQttfi0GtmfBMUff0YdE4p60nZrLR');
@@ -2236,75 +2245,7 @@ function conviertePIP($cod_asset,$tipo_signal,$signal,$precio_signal,$value,$sl_
         
         return $resultado;
 }
-function conviertePIP_EDIT($cod_asset,$pips_edit,$precio,$type_order,$address,$sl_tp){
-    //if( substr( $cod_asset, -3) != 'JPY'  ){
-    if( $cod_asset == 6 || $cod_asset == 7 || $cod_asset == 9 || $cod_asset == 12){
-        $cad = $pips_edit/100;
-        //$cad=abs(round($cad * 100)/100); 
-        //$cad=abs(round($cad,2)); 
-    }else{
-        $cad = $pips_edit/10000;
-        //$cad=abs(round($cad * 10000)/10000); //redondeo a 5 decimales
-        //$cad=abs(round($cad,2));
-    }
-    
-    $resultado=0;
-    switch ($type_order) {
-                    case 'Spot':
-                                       if ($address == 'Sell') {
-                                                 if($sl_tp == 'TP'){
-                                                     $resultado = $precio-$cad;
-                                                 }else{
-                                                     $resultado = $precio+$cad;
-                                                 }
-                                        } else {
-                                                if($sl_tp == 'TP'){
-                                                    $resultado = $precio+$cad;
-                                                }else{
-                                                    $resultado = $precio-$cad;
-                                                }
-                                        }
-                    break;
-                    
-                    case 'Buy Limit': 
-                                        if($address == 'SL' || $address == 'PO'){
-                                           $resultado = $precio-$cad;
-                                        }else{
-                                              $resultado = $precio+$cad; 
-                                            }
-                    break; 
-                
-                    case 'Sell Limit':
-                                        if($address == 'SL' || $address == 'PO'){
-                                           $resultado = $precio+$cad;
-                                         }else{
-                                               $resultado = $precio-$cad;
-                                             }
-                    break; 
-                
-                    case 'Buy Stop':
-                                        if($address == 'TP' || $address == 'PO'){
-                                           $resultado = $precio+$cad;
-                                        }else{
-                                                $resultado = $precio-$cad;
-                                            }
-                    break;    
-                    
-                    case 'Sell Stop':
-                                         if($address == 'TP' || $address == 'PO'){
-                                           $resultado = $precio-$cad;
-                                         }else{
-                                                $resultado = $precio+$cad;
-                                             }
-                    break; 
-                    
-                    default:
-                    break; 
-        }
-        
-        return $resultado;
-    
-}
+
 
 /* Shortcode que va a mostrar la tabla */
 function table_shortcode($atts) {
