@@ -1158,7 +1158,7 @@ if($flag != ''){//beeps
                                             $closing_price_c=substr($signal->closing_price."", 0,-3).'<a style="color:red">'.substr($signal->closing_price."", -3);
                                             $style_pips="style='color: #ff0000;font-weight: bold;'";
                                         }else if($signal->result==3){
-                                            $closing_price_c=substr($signal->closing_price."", 0,-3).'<a style="color:blue">'.substr($signal->closing_price."", -3);
+                                            $closing_price_c=substr($signal->closing_price."", 0,-3).'<a >'.substr($signal->closing_price."", -3);
                                             $style_pips="style='color: #0000ff;font-weight: bold;'";
                                         }
                                         $pips_g=$signal->pips;
@@ -1197,7 +1197,7 @@ if($flag != ''){//beeps
                                             $closing_price_c=substr($signal->closing_price."", 0,-3).'<a style="color:red">'.substr($signal->closing_price."", -3);
                                             $style_pips="style='color: #ff0000;font-weight: bold;'";
                                         }else if($signal->result==3){
-                                            $closing_price_c=substr($signal->closing_price."", 0,-3).'<a style="color:blue">'.substr($signal->closing_price."", -3);
+                                            $closing_price_c=substr($signal->closing_price."", 0,-3).'<a >'.substr($signal->closing_price."", -3);
                                             $style_pips="style='color: #0000ff;font-weight: bold;'";
                                         }
                                         $pips_g=$signal->pips;
@@ -1290,7 +1290,7 @@ if($flag != ''){//beeps
                                                     <td '.$style_ok_po.'>'.digitos($precio,$signal->cod_entry_price).'</td>
                                                     <td>'.$stop_loss.'</td>
                                                     <td>'.$take_profit.'</td>
-                                                    <td '.$class_quality.'>'.round($take_profit/$stop_loss,1).'<a href="'.$signal->rr_link.'">(?)</a></td>
+                                                    <td '.$class_quality.'>'.round($take_profit/$stop_loss,1).'<a style="color:#0077ff" href="'.$signal->rr_link.'">(?)</a></td>
                                                     <td>'.$closing_price_c.'</td>
                                                     <td>'.$closing_time.'</td>
                                                     <!--<td>'.$result.'</td>-->
@@ -1472,7 +1472,7 @@ $cad = "";
                                             $closing_price_c=substr($signal->closing_price."", 0,-3).'<a style="color:red">'.substr($signal->closing_price."", -3);
                                             $style_pips="style='color: #ff0000;font-weight: bold;'";
                                         }else if($signal->result==3){
-                                            $closing_price_c=substr($signal->closing_price."", 0,-3).'<a style="color:blue">'.substr($signal->closing_price."", -3);
+                                            $closing_price_c=substr($signal->closing_price."", 0,-3).'<a >'.substr($signal->closing_price."", -3);
                                             $style_pips="style='color: #0000ff;font-weight: bold;'";
                                         }
                                         $pips_g=$signal->pips;
@@ -1511,7 +1511,7 @@ $cad = "";
                                             $closing_price_c=substr($signal->closing_price."", 0,-3).'<a style="color:red">'.substr($signal->closing_price."", -3);
                                             $style_pips="style='color: #ff0000;font-weight: bold;'";
                                         }else if($signal->result==3){
-                                            $closing_price_c=substr($signal->closing_price."", 0,-3).'<a style="color:blue">'.substr($signal->closing_price."", -3);
+                                            $closing_price_c=substr($signal->closing_price."", 0,-3).'<a >'.substr($signal->closing_price."", -3);
                                             $style_pips="style='color: #0000ff;font-weight: bold;'";
                                         }
                                         $pips_g=$signal->pips;
@@ -1604,7 +1604,7 @@ $cad = "";
                                                     <td '.$style_ok_po.'>'.digitos($precio,$signal->cod_entry_price).'</td>
                                                     <td>'.$stop_loss.'</td>
                                                     <td>'.$take_profit.'</td>
-                                                    <td '.$class_quality.'>'.round($take_profit/$stop_loss,1).'<a href="'.$signal->rr_link.'">(?)</a></td>
+                                                    <td '.$class_quality.'>'.round($take_profit/$stop_loss,1).'<a style="color: #0077ff" href="'.$signal->rr_link.'">(?)</a></td>
                                                     <td>'.$closing_price_c.'</td>
                                                     <td>'.$closing_time.'</td>
                                                     <!--<td>'.$result.'</td>-->
