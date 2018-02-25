@@ -329,6 +329,7 @@ function registraDatos(){
     $method_e = $_POST['method_e'];
     $method_link_e = $_POST['method_link_e'];
     $rr_link_g = $_POST['rr_link_g'];
+    $publi_comentario_g = $_POST['publi_comentario'];
     actualizaPrecios(); //actualizar precios
 
     $precio_signal=generaPriceSignal($cod_asset,$tipo_signal,$signal); //funcion que va a obtner el precio con el que esta comprando o vendiendo
@@ -371,6 +372,7 @@ function registraDatos(){
             'method' => $method_e,
             'method_link' => $method_link_e,
             'rr_link' => $rr_link_g,
+            'commentary' => $publi_comentario_g,
         );
     /* Validamos para que solo existan 20 FIFO */   
     $total = $wpdb->get_var( "SELECT COUNT(*) FROM wp_signals" );//consultamos cuantos registros existe en la BD

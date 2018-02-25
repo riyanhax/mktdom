@@ -205,6 +205,7 @@ jQuery(document).ready(function() {
         var method_e = jQuery("#method_e").val();
         var method_link_e= jQuery("#method_link_e").val();
         var rr_link_g= jQuery("#rr_link_g").val();
+        var publi_comentario= jQuery("#publi-comentario").val();
         /* Obtenemos precios de compra y venta */
        var price_signal_sell = jQuery('#select-simbolo :selected').attr('label_sell'); 
        var price_signal_buy = jQuery('#select-simbolo :selected').attr('label_buy'); 
@@ -233,7 +234,8 @@ jQuery(document).ready(function() {
                 orden_pendiente:orden_pendiente,
                 method_e:method_e,
                 method_link_e:method_link_e,
-                rr_link_g:rr_link_g
+                rr_link_g:rr_link_g,
+                publi_comentario:publi_comentario
             }, function(data, status) { 
                     if(status == 'success'){
 //                        jQuery('#mensaje-signal').show(); 
@@ -295,9 +297,13 @@ function validar(){
     jQuery("#btn-update").prop('disabled', true);
     jQuery("#stop-loss-edit").prop('disabled', true);
     jQuery("#take-profit-edit").prop('disabled', true);
+    jQuery("#btn-update-publi").prop('disabled', true);
     sl = jQuery("#stop_loss").val();
     tp = jQuery("#take_profit").val();
     at = jQuery("#at_price").val();
+    jQuery("#label-imagen").hide();
+    jQuery("#img_vista").hide();
+    
     tipo_signal = jQuery("#tipo_signal").val();
     
     if(tipo_signal == 1){
@@ -348,7 +354,7 @@ jQuery(':file').change(function(){
 });
 
 jQuery('#btn-cancelar').click(function(){
-    jQuery('#take-profit-edit').prop('disabled',true);num-signal
+    jQuery('#take-profit-edit').prop('disabled',true);
     jQuery('#stop-loss-edit').prop('disabled',true);
     jQuery('#btn-update').prop('disabled',true);
     jQuery('#take-profit-edit').val('');
@@ -357,6 +363,19 @@ jQuery('#btn-cancelar').click(function(){
     jQuery('#num-signal').val('');
     resetEdit();
 });
+
+jQuery("#select_publi").change(function () {
+        var tipo = jQuery("#select_publi").val();
+        if (tipo == 1){
+            jQuery("#label-imagen").hide();
+            jQuery("#img_vista").hide();
+            jQuery("#coment_publi").show();
+        }else{
+            jQuery("#label-imagen").show();
+            jQuery("#img_vista").show();
+            jQuery("#coment_publi").hide();
+        }
+    });
 
 }); //end JQuery
 

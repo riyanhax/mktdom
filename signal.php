@@ -331,23 +331,27 @@ function signal_page(){ //define el contenido de una pagina
                             </button>
                         </form>
                     </div>
+                    
+                    <!-- ***********************************  BEGIN FORMULARIO PUBLICACION  ************************************  -->
+                    
+                    
                     <div class="col-md-4 border-form" style="width: 34.333%;">
                         <form role="form">
                             <div class="form-group row"> <!-- class row ayuda a que los 2 input esten en la misma fila -->
                                 <div class="col-md-5">
                                     <label for="label-stop-loss">¿Que publicar?</label>
-                                    <select class="form-control" id="publicacion">
+                                    <select class="form-control" id="select_publi">
                                         <option value="1">Comentario</option>
                                         <option value="2">Imagen</option>
                                     </select>
                                 </div>
                                 <div class="col-md-7"> 
                                     <label for="label-take-profit" style="visibility:hidden;display: block;">Link</label>
-                                    <label class="btn btn-warning btn-signal" for="btn-imagen">Subir imagen</label>
+                                    <label class="btn btn-warning btn-signal" for="btn-imagen" id="label-imagen">Subir imagen</label>
                                     <input class="form-control" id="btn-imagen"  type="file" style="display:none;" />
                                 </div>
                             </div>
-                            <div class="form-group row">    
+                            <div class="form-group row" id="img_vista">    
                                 <div class="col-md-12" >
                                     <label id="nom-arch"></label>
                                     <img id="image_g" style="max-width:100%; display:block;"/>
@@ -355,7 +359,7 @@ function signal_page(){ //define el contenido de una pagina
                                 
                                 <span id="error_tp_sl" class="text-error"></span>
                             </div>
-                            <div class="form-group row">    
+                            <div class="form-group row" id="coment_publi">    
                                 <div class="col-md-12" > 
                                     <label for="label-take-profit">Comentario</label>
                                     <textarea rows="7" maxlength="240" class="form-control" id="publi-comentario" style="resize:none;"></textarea>
