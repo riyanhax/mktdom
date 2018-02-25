@@ -158,6 +158,11 @@ jQuery(document).ready(function() {
     jQuery("#btn-update").click(function () {
         actualizarTakeProfit_StopLoss();
     });
+    
+    jQuery("#btn-update-publi").click(function () {
+        actualizarPublicacion();
+    });
+
 
     
     jQuery("#btn-registros").click(function () {
@@ -485,6 +490,28 @@ function actualizarTakeProfit_StopLoss(){
     }
 }
 
+function actualizarPublicacion(){
+    var id_signal = jQuery("#id-signal-publi").val();
+    var select_publi = jQuery("#select_publi").val();
+    if(select_publi==1){
+        var comentario = jQuery("#publi-comentario").val();
+        var datos = {
+            'action': 'actualizar_comentario',
+            'id_signal':id_signal,
+            'whatever': comentario
+        };
+        jQuery.post(ajaxurl, datos, function(data, status) {
+                if(status == 'success'){
+                            //alert("Successfully update edit");
+                            //var obj = JSON.parse(data);
+                            //jQuery( "#tabla-signal-admin" ).html(obj );
+                        }       
+        });
+    }else{
+        alert('imagen');
+    }
+}
+
 function editarDatosTP_SL_edit(id_signal,stop_loss,take_profit,num_g,precio,asset){   
     if(asset==='JPY'){
         stop_loss=(stop_loss-precio)*100;
@@ -519,6 +546,13 @@ function editarDatosTP_SL_edit(id_signal,stop_loss,take_profit,num_g,precio,asse
     });
 }
 
+function editarPublicacion(id_signal,num_g){
+    
+    jQuery("#id-signal-publi").val(id_signal);
+    jQuery("#num-signal-publi").val(num_g); 
+    jQuery("#btn-update-publi").prop('disabled', false);
+
+}
 
 var num=1;
 function switch_stoploss(){

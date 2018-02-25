@@ -52,6 +52,7 @@ add_action('wp_ajax_registra', 'registraDatos');
 add_action('wp_ajax_elimina', 'eliminaDatos');
 add_action('wp_ajax_cancelar', 'cancelaDatos');
 add_action('wp_ajax_actualiza', 'actualiza_TakeProfit_StopLoss');
+add_action('wp_ajax_actualizar_comentario', 'actualizar_comentario');
 
 add_action( 'wp_ajax_stop_loss', 'switch_ls' );
 add_action( 'wp_ajax_take_profit', 'switch_tp' );
@@ -234,6 +235,22 @@ function actualiza_TakeProfit_StopLoss(){
     }
 }
 
+function actualizar_comentario(){
+    global $wpdb;
+    if (isset($_POST['action'])) {
+        if($_POST['id_signal'] >0){
+            $id_signal=$_POST['id_signal'];
+            $comentario=$_POST['whatever'];
+        
+            $table_signals = $wpdb->prefix . "signals";
+            $wpdb->update($table_signals, array('commentary' =>$comentario), array('ID' => $id_signal));     
+       
+            $cad = draw_table_signal();
+            echo json_encode($cad);
+            exit();
+        }
+    }
+}
 
 function switch_edit(){
     global $wpdb;
@@ -917,7 +934,7 @@ $cad = "";
                                                     
                                                     
                                                     if($signal->result == 0){
-                                                        $cad .='<td><a href="javascript:void(0);" id="btn_editar_publi" title="Edit publication"><span class="dashicons dashicons-welcome-write-blog" style="color:#00ffff"></span></a></td>';
+                                                        $cad .='<td><a href="javascript:void(0);" id="btn_editar_publi" title="Edit publication" onclick="editarPublicacion(\''.$signal->ID.'\',\''.$num_g.'\')"><span class="dashicons dashicons-welcome-write-blog" style="color:#00ffff"></span></a></td>';
                                                     }else{
                                                         $cad .='<td id="col_edit"><span class="dashicons dashicons-welcome-write-blog"></span></td>';
                                                     }
@@ -931,6 +948,9 @@ $cad = "";
                                                     }else{
                                                         $cad .='<td><span class="dashicons dashicons-edit"></span></td>';
                                                     }
+                                                    
+                                                    
+                                                    $cad .='<td><a href="javascript:void(0);" id="btn_editar_publi" title="Commentary"><span class="dashicons dashicons-admin-comments" style="color:#ff3"></span></a></td>';
                                                     
 //                                                    $cad .='<td><a href="javascript:void(0);" onclick="javascript:signal.delete(\''.$signal->ID.'\')" > <span class="dashicons dashicons-trash"></span></a></td>';
                                         
