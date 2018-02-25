@@ -603,10 +603,10 @@ $cad = "";
 					    ACTIONS
 					</th>';
                                 $cad .= '<th class="text-center">
-					    EDIT
+					    EDIT COMENT
 					</th>';
                                 $cad .= '<th class="text-center">
-					    
+					    EDIT TP_SL
 					</th>';
 				   $cad .= '</tr>
 				</thead>';
@@ -916,10 +916,10 @@ $cad = "";
                                                     
                                                     
                                                     
-                                                    if($signal->switch_edit == 1){
-                                                        $cad .='<td id="col_edit"><span class="dashicons dashicons-warning" style="color:#ffff00"></span></td>';
+                                                    if($signal->result == 0){
+                                                        $cad .='<td><a href="javascript:void(0);" id="btn_editar_publi" title="Edit publication"><span class="dashicons dashicons-welcome-write-blog" style="color:#00ffff"></span></a></td>';
                                                     }else{
-                                                        $cad .='<td id="col_edit"></td>';
+                                                        $cad .='<td id="col_edit"><span class="dashicons dashicons-welcome-write-blog"></span></td>';
                                                     }
                                                     
                                                     
@@ -927,9 +927,9 @@ $cad = "";
                                                     
                                                     
                                                     if($signal->result == 0){
-                                                        $cad .='<td><a href="javascript:void(0);" id="btn_editar" onclick="editarDatosTP_SL_edit(\''.$signal->ID.'\',\''.$signal->stop_loss.'\',\''.$signal->take_profit.'\',\''.$num_g.'\',\''.$precio.'\',\''.substr( $asset, -3).'\')" title="Editar"><span class="dashicons dashicons-edit" style="color:#00cc00"></span></a></td>';
+                                                        $cad .='<td><a href="javascript:void(0);" id="btn_editar" onclick="editarDatosTP_SL_edit(\''.$signal->ID.'\',\''.$signal->stop_loss.'\',\''.$signal->take_profit.'\',\''.$num_g.'\',\''.$precio.'\',\''.substr( $asset, -3).'\')" title="Edit signal"><span class="dashicons dashicons-edit" style="color:#00cc00"></span></a></td>';
                                                     }else{
-                                                        $cad .='<td>Editar<span class="dashicons dashicons-edit"></span></td>';
+                                                        $cad .='<td><span class="dashicons dashicons-edit"></span></td>';
                                                     }
                                                     
 //                                                    $cad .='<td><a href="javascript:void(0);" onclick="javascript:signal.delete(\''.$signal->ID.'\')" > <span class="dashicons dashicons-trash"></span></a></td>';
