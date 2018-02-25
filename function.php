@@ -876,8 +876,8 @@ $cad = "";
                                                             $cad.='<td style="color:#00ffff">'.conviertePIP($asset,$signal->type_of_order,$signal->address,$precio,'TP',$take_profit_edit).'</td>';
                                                         }
                                                     }
-                                                    
-                                                    if($signal->address=="Pending Order" || $signal->cod_op=0){
+                                                    //**************  COLUMNA R / R  *******************
+                                                    if($signal->address=="Pending Order" && $signal->cod_op=0){
                                                         $cad.='<td '.$class_quality.'></td>';
                                                     }else{
                                                         if($signal->switch_sl!=0 && $stop_loss_edit!=0){
@@ -1893,9 +1893,9 @@ add_action('wp_ajax_update_precios', 'actualizaPrecios');  //funcion que actuliz
 //Esta funcion actualiza los precios de las monedas
 function actualizaPrecios(){
     global $wpdb;
-    //$ch = curl_init('https://forex.1forge.com/1.0.3/quotes?pairs=EURUSD,GBPUSD,AUDUSD,NZDUSD,USDCAD,USDJPY,EURJPY,EURAUD,GBPJPY,GBPAUD,AUDNZD,AUDJPY&api_key=T6xtYb1asOJv3dktmqCYGFbckRMP8Ugm');
+    $ch = curl_init('https://forex.1forge.com/1.0.3/quotes?pairs=EURUSD,GBPUSD,AUDUSD,NZDUSD,USDCAD,USDJPY,EURJPY,EURAUD,GBPJPY,GBPAUD,AUDNZD,AUDJPY&api_key=T6xtYb1asOJv3dktmqCYGFbckRMP8Ugm');
     //$ch = curl_init('https://forex.1forge.com/1.0.3/quotes?pairs=EURUSD,GBPUSD,AUDUSD,NZDUSD,USDCAD,USDJPY,EURJPY,EURAUD,GBPJPY,GBPAUD,AUDNZD,AUDJPY&api_key=49rv3u9Xjdohn74vlhirYMkk9O1UPVEF');
-    $ch = curl_init('https://forex.1forge.com/1.0.3/quotes?pairs=EURUSD,GBPUSD,AUDUSD,NZDUSD,USDCAD,USDJPY,EURJPY,EURAUD,GBPJPY,GBPAUD,AUDNZD,AUDJPY&api_key=sPXBxhUWSVjiRlZGG5MmFbW4ooIN1zqF');
+    //$ch = curl_init('https://forex.1forge.com/1.0.3/quotes?pairs=EURUSD,GBPUSD,AUDUSD,NZDUSD,USDCAD,USDJPY,EURJPY,EURAUD,GBPJPY,GBPAUD,AUDNZD,AUDJPY&api_key=sPXBxhUWSVjiRlZGG5MmFbW4ooIN1zqF');
     //$ch = curl_init('https://forex.1forge.com/1.0.3/quotes?pairs=EURUSD,GBPUSD,AUDUSD,NZDUSD,USDCAD,USDJPY,EURJPY,EURAUD,GBPJPY,GBPAUD,AUDNZD,AUDJPY&api_key=1XSbz2osTYy4hJILXnIPI18BsNgOnco7');
     //$ch = curl_init('https://forex.1forge.com/1.0.3/quotes?pairs=EURUSD,GBPUSD,AUDUSD,NZDUSD,USDCAD,USDJPY,EURJPY,EURAUD,GBPJPY,GBPAUD,AUDNZD,AUDJPY&api_key=XkcUf5UO1JTl6vKt3yeN3zTolQaCKNPU');
     //$ch = curl_init('https://forex.1forge.com/1.0.3/quotes?pairs=EURUSD,GBPUSD,AUDUSD,NZDUSD,USDCAD,USDJPY,EURJPY,EURAUD,GBPJPY,GBPAUD,AUDNZD,AUDJPY&api_key=5kypQttfi0GtmfBMUff0YdE4p60nZrLR');
