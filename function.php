@@ -706,8 +706,8 @@ $cad = "";
                                             $closing_price_c=substr($signal->closing_price."", 0,-3).'<a style="color:red">'.substr($signal->closing_price."", -3);
                                             $style_pips="style='color: #ff0000;font-weight: bold;'";
                                         }else if($signal->result==3){
-                                            $closing_price_c=substr($signal->closing_price."", 0,-3).'<a style="color:blue">'.substr($signal->closing_price."", -3);
-                                            $style_pips="style='color: #0000ff;font-weight: bold;'";
+                                            $closing_price_c=substr($signal->closing_price."", 0,-3).'<a>'.substr($signal->closing_price."", -3);
+                                            $style_pips="style='font-weight: bold;'";
                                         }
                                         $pips_g=$signal->pips;
                                     }
@@ -745,8 +745,8 @@ $cad = "";
                                             $closing_price_c=substr($signal->closing_price."", 0,-3).'<a style="color:red">'.substr($signal->closing_price."", -3);
                                             $style_pips="style='color: #ff0000;font-weight: bold;'";
                                         }else if($signal->result==3){
-                                            $closing_price_c=substr($signal->closing_price."", 0,-3).'<a style="color:blue">'.substr($signal->closing_price."", -3);
-                                            $style_pips="style='color: #0000ff;font-weight: bold;'";
+                                            $closing_price_c=substr($signal->closing_price."", 0,-3).'<a>'.substr($signal->closing_price."", -3);
+                                            $style_pips="style='font-weight: bold;'";
                                         }
                                         $pips_g=$signal->pips;
                                     }
@@ -1893,7 +1893,7 @@ add_action('wp_ajax_update_precios', 'actualizaPrecios');  //funcion que actuliz
 //Esta funcion actualiza los precios de las monedas
 function actualizaPrecios(){
     global $wpdb;
-    $ch = curl_init('https://forex.1forge.com/1.0.3/quotes?pairs=EURUSD,GBPUSD,AUDUSD,NZDUSD,USDCAD,USDJPY,EURJPY,EURAUD,GBPJPY,GBPAUD,AUDNZD,AUDJPY&api_key=T6xtYb1asOJv3dktmqCYGFbckRMP8Ugm');
+    //$ch = curl_init('https://forex.1forge.com/1.0.3/quotes?pairs=EURUSD,GBPUSD,AUDUSD,NZDUSD,USDCAD,USDJPY,EURJPY,EURAUD,GBPJPY,GBPAUD,AUDNZD,AUDJPY&api_key=T6xtYb1asOJv3dktmqCYGFbckRMP8Ugm');
     //$ch = curl_init('https://forex.1forge.com/1.0.3/quotes?pairs=EURUSD,GBPUSD,AUDUSD,NZDUSD,USDCAD,USDJPY,EURJPY,EURAUD,GBPJPY,GBPAUD,AUDNZD,AUDJPY&api_key=49rv3u9Xjdohn74vlhirYMkk9O1UPVEF');
     //$ch = curl_init('https://forex.1forge.com/1.0.3/quotes?pairs=EURUSD,GBPUSD,AUDUSD,NZDUSD,USDCAD,USDJPY,EURJPY,EURAUD,GBPJPY,GBPAUD,AUDNZD,AUDJPY&api_key=sPXBxhUWSVjiRlZGG5MmFbW4ooIN1zqF');
     //$ch = curl_init('https://forex.1forge.com/1.0.3/quotes?pairs=EURUSD,GBPUSD,AUDUSD,NZDUSD,USDCAD,USDJPY,EURJPY,EURAUD,GBPJPY,GBPAUD,AUDNZD,AUDJPY&api_key=1XSbz2osTYy4hJILXnIPI18BsNgOnco7');
