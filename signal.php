@@ -416,11 +416,19 @@ function signal_page(){ //define el contenido de una pagina
                                     <label for="label-stop-loss">To post</label>
                                     <input class="form-control" id="cbx-post" type="checkbox" />
                                 </div>-->
-                                
-                                <div class="col-md-1">
+                            </div>
+                            <div class="form-group row" >    
+                                <div class="col-md-6">
                                     <label for="label-take-profit" style="visibility:hidden;">Link</label>
                                     <button type="button" class="btn btn-primary " id="btn-update" >
                                         Update
+                                    </button> 
+                                </div>
+                               
+                                <div class="col-md-6">
+                                    <label for="label-take-profit" style="visibility:hidden;">Link</label>
+                                    <button type="button" class="btn btn-primary " id="btn-cancelar" >
+                                        Cancelar
                                     </button> 
                                 </div>
                                 
