@@ -611,3 +611,17 @@ function resetEdit(){
                     }       
     });
 }
+
+function mostrarPublicidad(id_signal,num){
+    var datos = {
+            'action': 'capturar_publicidad',
+            'id_signal':id_signal
+    };
+    jQuery.post(ajaxurl, datos, function(data, status) {
+            if(status === 'success'){
+                        alert("Successfully load  "+data);
+                        //var obj = JSON.parse(data);
+                        //jQuery( "#tabla-signal-admin" ).html(obj );
+                    }       
+    });
+}

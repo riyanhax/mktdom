@@ -58,6 +58,7 @@ add_action( 'wp_ajax_stop_loss', 'switch_ls' );
 add_action( 'wp_ajax_take_profit', 'switch_tp' );
 add_action( 'wp_ajax_switch_edit', 'switch_edit' );
 add_action( 'wp_ajax_resetEdit', 'resetEdit' );
+add_action( 'wp_ajax_capturar_publicidad', 'capturar_publicidad' );
 //add_action('wp_ajax_consulta', 'consultaDatos'); //ajax no esta en marcha
 
 //Funcion que dverifica si exiten datos para realizar el bucle
@@ -247,6 +248,23 @@ function actualizar_comentario(){
        
             $cad = draw_table_signal();
             echo json_encode($cad);
+            exit();
+        }
+    }
+}
+
+function capturar_publicidad(){
+    global $wpdb;
+    if (isset($_POST['action'])) {
+        if($_POST['id_signal'] >0){
+            $id_signal=$_POST['id_signal'];
+        
+            $table_signals = $wpdb->prefix . "signals";
+            $ultimo_registro = $wpdb->get_row( "SELECT * FROM ".$wpdb->prefix ."signals WHERE ID=".$id_signal );     
+       
+            $cad = draw_table_signal();
+            //echo json_encode($cad);
+            echo $ultimo_registro->commentary;
             exit();
         }
     }
@@ -950,7 +968,7 @@ $cad = "";
                                                     }
                                                     
                                                     
-                                                    $cad .='<td><a href="javascript:void(0);" id="btn_editar_publi" title="Commentary"><span class="dashicons dashicons-admin-comments" style="color:#ff3"></span></a></td>';
+                                                    $cad .='<td><a href="javascript:void(0);" id="btn_mostrar_publi" onclick="mostrarPublicidad(\''.$signal->ID.'\',\''.$num_g.'\')" title="Commentary"><span class="dashicons dashicons-admin-comments" style="color:#ff3"></span></a></td>';
                                                     
 //                                                    $cad .='<td><a href="javascript:void(0);" onclick="javascript:signal.delete(\''.$signal->ID.'\')" > <span class="dashicons dashicons-trash"></span></a></td>';
                                         
