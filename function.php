@@ -2112,9 +2112,17 @@ function updateTableSignals() {
             $asset = $signal->asset;
             $tipo_signal = $signal->type_of_order;
             $address = $signal->address;
-            
             $take_profit = $signal->take_profit;
             $stop_loss = $signal->stop_loss;
+            $take_profit_edit = $signal->take_profit_edit;
+            $stop_loss_edit = $signal->stop_loss_edit;
+            
+            if($take_profit_edit != 0){
+                $take_profit = $take_profit_edit;
+            }
+            if($stop_loss_edit != 0){
+                $stop_loss = $stop_loss_edit;
+            }
             
             $resultado = $signal->result;
             $orden_pendiente = $signal->orden_pendiente;
@@ -2279,9 +2287,17 @@ function updateTableSignals_membership() {
             $asset = $signal->asset;
             $tipo_signal = $signal->type_of_order;
             $address = $signal->address;
-            
             $take_profit = $signal->take_profit;
             $stop_loss = $signal->stop_loss;
+            $take_profit_edit = $signal->take_profit_edit;
+            $stop_loss_edit = $signal->stop_loss_edit;
+            
+            if($take_profit_edit != 0){
+                $take_profit = $take_profit_edit;
+            }
+            if($stop_loss_edit != 0){
+                $stop_loss = $stop_loss_edit;
+            }
             
             $resultado = $signal->result;
             $orden_pendiente = $signal->orden_pendiente;
