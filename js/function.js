@@ -347,6 +347,16 @@ jQuery(':file').change(function(){
     }
 });
 
+jQuery('#btn-cancelar').click(function(){
+    jQuery('#take-profit-edit').prop('disabled',true);num-signal
+    jQuery('#stop-loss-edit').prop('disabled',true);
+    jQuery('#btn-update').prop('disabled',true);
+    jQuery('#take-profit-edit').val('');
+    jQuery('#stop-loss-edit').val('');
+    jQuery('#id-signal').val('');
+    jQuery('#num-signal').val('');
+    resetEdit();
+});
 
 }); //end JQuery
 
@@ -424,7 +434,7 @@ function actualizarTakeProfit_StopLoss(){
     var stop_loss_edit = jQuery("#stop-loss-edit").val();
     var take_profit_edit = jQuery("#take-profit-edit").val();
     
-    if( (stop_loss_edit == null || stop_loss_edit.length == 0 || /^\s+$/.test(stop_loss_edit) || stop_loss_edit<=0) && (take_profit_edit == null || take_profit_edit.length == 0 || /^\s+$/.test(take_profit_edit) || take_profit_edit <=0)){
+    if( (stop_loss_edit == null || stop_loss_edit.length == 0 || /^\s+$/.test(stop_loss_edit) || stop_loss_edit<=0) || (take_profit_edit == null || take_profit_edit.length == 0 || /^\s+$/.test(take_profit_edit) || take_profit_edit <=0)){
         alert('Por favor rellenar los campos de "New Stop Loss" o "New Take Profit"');
         jQuery("#stop-loss-edit").focus();
     }else{
