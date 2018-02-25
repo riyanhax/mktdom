@@ -340,11 +340,11 @@ function signal_page(){ //define el contenido de una pagina
                             <div class="form-group row"> <!-- class row ayuda a que los 2 input esten en la misma fila -->
                                 <div class="col-md-4" style="display: none;">
                                     <label for="label-stop-loss">ID SIGNAL</label>
-                                    <input class="form-control" id="id-signal" type="text" style="height:2.5em;"/>
+                                    <input class="form-control" id="id-signal-publi" type="text" style="height:2.5em;"/>
                                 </div>
                                 <div class="col-md-3">
                                     <label for="label-stop-loss">N°</label>
-                                    <input class="form-control" id="num-signal" type="text" disabled style="height:2.5em;"/>
+                                    <input class="form-control" id="num-signal-publi" type="text" disabled style="height:2.5em;"/>
                                 </div>
                                 <div class="col-md-5">
                                     <label for="label-stop-loss">¿Que publicar?</label>
