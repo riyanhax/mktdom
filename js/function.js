@@ -389,6 +389,15 @@ jQuery("#select_publi").change(function () {
             jQuery("#coment_publi").hide();
         }
     });
+    
+    
+    /*jQuery('.toolTipText').css("display","none");
+
+    jQuery('.toolTip').on("click",function(){alert('entro');
+        var publi = '<div>publicacion<img style="width:100%;" src="wordpress.jpg"></div>';
+        jQuery('.toolTipText').html(publi);
+        jQuery('.toolTipText').toggle();
+    });*/
 
 }); //end JQuery
 
@@ -635,15 +644,18 @@ function resetEdit(){
 }
 
 function mostrarPublicidad(id_signal,num){
+
     var datos = {
             'action': 'capturar_publicidad',
-            'id_signal':id_signal
+            'id_signal':id_signal,
+            'num': 1
     };
     jQuery.post(ajaxurl, datos, function(data, status) {
             if(status === 'success'){
-                        alert("Successfully load  "+data);
-                        //var obj = JSON.parse(data);
-                        //jQuery( "#tabla-signal-admin" ).html(obj );
-                    }       
+                //jQuery(".toolTipText").text(data);
+                //alert("Successfully load 1234  "+data);
+            }       
     });
 }
+
+

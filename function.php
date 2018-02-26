@@ -277,13 +277,17 @@ function capturar_publicidad(){
     if (isset($_POST['action'])) {
         if($_POST['id_signal'] >0){
             $id_signal=$_POST['id_signal'];
+            $num=$_POST['num'];
+            
+            resetPubli();
         
             $table_signals = $wpdb->prefix . "signals";
-            $ultimo_registro = $wpdb->get_row( "SELECT * FROM ".$wpdb->prefix ."signals WHERE ID=".$id_signal );     
+            //$ultimo_registro = $wpdb->get_row( "SELECT * FROM ".$wpdb->prefix ."signals WHERE ID=".$id_signal );     
+            $wpdb->update($table_signals, array('switch_publi' =>1), array('ID' => $id_signal));        
        
             $cad = draw_table_signal();
             //echo json_encode($cad);
-            echo $ultimo_registro->commentary;
+            echo $num;
             exit();
         }
     }
@@ -323,6 +327,23 @@ function resetEdit(){
     if(count($data) > 0){ //validamos en caso de que no exista datos registrados en la BD
         foreach ( $data as $signal ){
             $wpdb->query('update '.$table_signals.' set switch_edit=0');
+        }
+    }
+}
+
+function resetPubli(){
+    global $wpdb;
+    $table_signals = $wpdb->prefix . "signals";
+            
+    $data = $wpdb->get_results( 
+        "SELECT *
+         FROM ".$wpdb->prefix ."signals t1
+         INNER JOIN ".$wpdb->prefix ."signals_price t2 ON(t2.cod_entry_price = t1.cod_entry_price)
+         ORDER BY ID desc"
+    ); 
+    if(count($data) > 0){ //validamos en caso de que no exista datos registrados en la BD
+        foreach ( $data as $signal ){
+            $wpdb->query('update '.$table_signals.' set switch_publi=0');
         }
     }
 }
@@ -987,7 +1008,12 @@ $cad = "";
                                                     }
                                                     
                                                     
-                                                    $cad .='<td><a href="javascript:void(0);" id="btn_mostrar_publi" onclick="mostrarPublicidad(\''.$signal->ID.'\',\''.$num_g.'\')" title="Commentary"><span class="dashicons dashicons-admin-comments" style="color:#ff3"></span></a></td>';
+                                                    if($signal->switch_publi==1){
+                                                        $cad .='<td class="toolTip" style="width: 100%"><a href="javascript:void(0);" id="btn_mostrar_publi" onclick="mostrarPublicidad(\''.$signal->ID.'\',\''.$num_g.'\')" title="Commentary"><span class="dashicons dashicons-admin-comments" style="color:#ff3"></span></a><span class="toolTipText">'.$signal->commentary.'</span></td>';
+                                                    }else{
+                                                        $cad .='<td class="toolTip" style="width: 100%;"><a href="javascript:void(0);" id="btn_mostrar_publi" onclick="mostrarPublicidad(\''.$signal->ID.'\',\''.$num_g.'\')" title="Commentary"><span class="dashicons dashicons-admin-comments" style="color:#ff3"></span></a><span class="toolTipText" style=" display:none;">publicacion</span></td>';
+                                                    }
+                                                    
                                                     
 //                                                    $cad .='<td><a href="javascript:void(0);" onclick="javascript:signal.delete(\''.$signal->ID.'\')" > <span class="dashicons dashicons-trash"></span></a></td>';
                                         

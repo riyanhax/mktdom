@@ -245,3 +245,48 @@ div.content {
     text-align: left !important;
 }
 /********************/
+
+.toolTip{
+  position: relative;
+  display: inline-block;
+  text-decoration: underline;
+  width: 100px;
+}
+
+.toolTip .toolTipText{
+  /*visibility: hidden;*/
+  background-color: #ccc;
+  color: white;
+  padding: 5px 10px;
+  border-radius: 8px;
+  margin-left: 60px;
+  top: 0px;
+  right: 110%;
+  position: absolute;
+  width: 400px;
+  text-align: center;
+  transition: .1s;
+}
+
+.toolTip .toolTipText::after{
+  content: "";
+  position: absolute;
+   border-width: 5px;
+  border-style: solid;
+  border-color: transparent transparent  transparent #ccc;
+  right: -9px;
+  top:5px;
+}
+
+.toolTip:hover .toolTipText{
+  /*visibility: visible;*/
+  
+}
+
+.flecha{
+  width: 1px;
+  height: 1px;
+  border-width: 530;
+  border-style: solid;
+  border-color: transparent transparent black transparent
+}
