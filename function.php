@@ -59,6 +59,7 @@ add_action( 'wp_ajax_take_profit', 'switch_tp' );
 add_action( 'wp_ajax_switch_edit', 'switch_edit' );
 add_action( 'wp_ajax_resetEdit', 'resetEdit' );
 add_action( 'wp_ajax_capturar_publicidad', 'capturar_publicidad' );
+add_action( 'wp_ajax_actualizar_imagen', 'actualizar_imagen' );
 //add_action('wp_ajax_consulta', 'consultaDatos'); //ajax no esta en marcha
 
 //Funcion que dverifica si exiten datos para realizar el bucle
@@ -231,6 +232,24 @@ function actualiza_TakeProfit_StopLoss(){
        
             $cad = draw_table_signal();
             echo json_encode($cad);
+            exit();
+        }
+    }
+}
+function actualizar_imagen(){
+    global $wpdb;
+    if (isset($_POST['action'])) {
+        if($_POST['id_signal'] >0){
+            $id_signal=$_POST['id_signal'];
+            $imagen=$_POST['whatever'];
+            //$imagen='khgfkhgfjhgfjg';
+        
+            $table_signals = $wpdb->prefix . "signals";
+            $wpdb->update($table_signals, array('image' =>$imagen), array('ID' => $id_signal));     
+       
+            //$cad = draw_table_signal();
+            //echo json_encode($cad);
+            echo $imagen;
             exit();
         }
     }

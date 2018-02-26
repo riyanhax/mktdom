@@ -1,3 +1,4 @@
+var imagen_file=0;
 jQuery(document).ready(function() {
    validar(); //Funcion que valida los input stop loss, take profit y at price 
    validarNroRegistros();
@@ -333,6 +334,9 @@ function validar(){
    }
 }
 
+/***********************  INPUT FILE QUE CAPTURA LA IMAGEN  **************************/
+
+
 jQuery(':file').change(function(){
     //obtenemos un array con los datos del archivo
     var file = jQuery("#btn-imagen")[0].files[0];
@@ -351,6 +355,10 @@ jQuery(':file').change(function(){
         var reader = new FileReader();
 
         reader.onload = function (e) {
+            console.log(e.target.result.toString());
+            alert(e.target.result.toString());
+            imagen_file = e.target.result.toString();
+            
             jQuery('#image_g').attr('src', e.target.result);
         };
 
@@ -508,7 +516,21 @@ function actualizarPublicacion(){
                         }       
         });
     }else{
-        alert('imagen');
+        
+        var imagen = imagen_file;
+        alert(imagen);
+        var datos = {
+            'action': 'actualizar_imagen',
+            'id_signal':id_signal,
+            'whatever': imagen
+        };
+        jQuery.post(ajaxurl, datos, function(data, status) {
+                if(status == 'success'){
+                            alert(data);
+                            //var obj = JSON.parse(data);
+                            //jQuery( "#tabla-signal-admin" ).html(obj );
+                        }       
+        });
     }
 }
 

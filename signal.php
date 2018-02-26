@@ -383,6 +383,14 @@ function signal_page(){ //define el contenido de una pagina
                                     </button> 
                                 </div>
                             </div>
+                            <div class="form-group row" id="img_vista_php">    
+                                <div class="col-md-12" >
+                                    <label id="nom-arch"></label>
+                                    <img id="image_g_php" style="max-width:100%; display:block;"/>
+                                </div>
+                                
+                                <span id="error_tp_sl" class="text-error"></span>
+                            </div>
                             
                         </form>
                     </div>
