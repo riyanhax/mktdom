@@ -255,17 +255,23 @@ div.content {
 
 .toolTip .toolTipText{
   /*visibility: hidden;*/
-  background-color: #ccc;
-  color: white;
-  padding: 5px 10px;
+  background-color: #ddd;
+  color: black;
+  font-size:1.2em;
+  padding: 15px 15px;
   border-radius: 8px;
   margin-left: 60px;
   top: 0px;
   right: 110%;
   position: absolute;
-  width: 400px;
+  width: 200px;
+  height: auto;
   text-align: center;
   transition: .1s;
+}
+
+.toolTip .toolTipText div{
+    /*overflow-y: scroll;*/
 }
 
 .toolTip .toolTipText::after{

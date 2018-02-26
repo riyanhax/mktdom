@@ -349,7 +349,7 @@ function signal_page(){ //define el contenido de una pagina
                                 <div class="col-md-5">
                                     <label for="label-stop-loss">¿Que publicar?</label>
                                     <select class="form-control" id="select_publi">
-                                        <option value="1">Comentario</option>
+                                        <option value="1" selected>Comentario</option>
                                         <option value="2">Imagen</option>
                                     </select>
                                 </div>

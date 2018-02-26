@@ -60,6 +60,7 @@ add_action( 'wp_ajax_switch_edit', 'switch_edit' );
 add_action( 'wp_ajax_resetEdit', 'resetEdit' );
 add_action( 'wp_ajax_capturar_publicidad', 'capturar_publicidad' );
 add_action( 'wp_ajax_actualizar_imagen', 'actualizar_imagen' );
+add_action( 'wp_ajax_resetPubli', 'resetPubli' );
 //add_action('wp_ajax_consulta', 'consultaDatos'); //ajax no esta en marcha
 
 //Funcion que dverifica si exiten datos para realizar el bucle
@@ -283,7 +284,7 @@ function capturar_publicidad(){
         
             $table_signals = $wpdb->prefix . "signals";
             //$ultimo_registro = $wpdb->get_row( "SELECT * FROM ".$wpdb->prefix ."signals WHERE ID=".$id_signal );     
-            $wpdb->update($table_signals, array('switch_publi' =>1), array('ID' => $id_signal));        
+            $wpdb->update($table_signals, array('switch_publi' =>$num), array('ID' => $id_signal));        
        
             $cad = draw_table_signal();
             //echo json_encode($cad);
@@ -1009,7 +1010,7 @@ $cad = "";
                                                     
                                                     
                                                     if($signal->switch_publi==1){
-                                                        $cad .='<td class="toolTip" style="width: 100%"><a href="javascript:void(0);" id="btn_mostrar_publi" onclick="mostrarPublicidad(\''.$signal->ID.'\',\''.$num_g.'\')" title="Commentary"><span class="dashicons dashicons-admin-comments" style="color:#ff3"></span></a><span class="toolTipText">'.$signal->commentary.'</span></td>';
+                                                        $cad .='<td class="toolTip" style="width: 100%"><a href="javascript:void(0);" id="btn_mostrar_publi" onclick="mostrarPublicidad(\''.$signal->ID.'\',\''.$num_g.'\')" title="Commentary"><span class="dashicons dashicons-admin-comments" style="color:#ff3"></span></a><span class="toolTipText"><div>'.$signal->commentary.'</div></span></td>';
                                                     }else{
                                                         $cad .='<td class="toolTip" style="width: 100%;"><a href="javascript:void(0);" id="btn_mostrar_publi" onclick="mostrarPublicidad(\''.$signal->ID.'\',\''.$num_g.'\')" title="Commentary"><span class="dashicons dashicons-admin-comments" style="color:#ff3"></span></a><span class="toolTipText" style=" display:none;">publicacion</span></td>';
                                                     }

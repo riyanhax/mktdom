@@ -7,6 +7,7 @@ jQuery(document).ready(function() {
     /****************************/
     signalTable();
     resetEdit();
+    resetPubli();
 //    setInterval(signalTable,30000);
 //    
     var ID_SIGNAL=0;
@@ -309,6 +310,9 @@ function validar(){
     at = jQuery("#at_price").val();
     jQuery("#label-imagen").hide();
     jQuery("#img_vista").hide();
+    jQuery("#id-signal-publi").val('');
+    jQuery("#num-signal-publi").val('');
+    jQuery("#publi-comentario").val('');
     
     tipo_signal = jQuery("#tipo_signal").val();
     
@@ -582,7 +586,7 @@ function editarPublicacion(id_signal,num_g){
     jQuery("#id-signal-publi").val(id_signal);
     jQuery("#num-signal-publi").val(num_g); 
     jQuery("#btn-update-publi").prop('disabled', false);
-
+    jQuery("#select_publi").focus();
 }
 
 var num=1;
@@ -642,13 +646,31 @@ function resetEdit(){
                     }       
     });
 }
-
+function resetPubli(){
+    var datos = {
+            'action': 'resetPubli'
+    };
+    jQuery.post(ajaxurl, datos, function(data, status) {
+            if(status === 'success'){
+                        //alert("Successfully load");
+                        //var obj = JSON.parse(data);
+                        //jQuery( "#tabla-signal-admin" ).html(obj );
+                    }       
+    });
+}
+var num_publi=0;
 function mostrarPublicidad(id_signal,num){
+    
+    if(num_publi==0){
+        num_publi=1;
+    }else{
+        num_publi=0;
+    }
 
     var datos = {
             'action': 'capturar_publicidad',
             'id_signal':id_signal,
-            'num': 1
+            'num': num_publi
     };
     jQuery.post(ajaxurl, datos, function(data, status) {
             if(status === 'success'){
