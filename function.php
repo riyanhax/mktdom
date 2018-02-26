@@ -2157,18 +2157,20 @@ function updateTableSignals() {
             $take_profit_edit = $signal->take_profit_edit;
             $stop_loss_edit = $signal->stop_loss_edit;
             
-            if($take_profit_edit != 0){
-                $take_profit = $take_profit_edit;
-            }
-            if($stop_loss_edit != 0){
-                $stop_loss = $stop_loss_edit;
-            }
+            
             
             $resultado = $signal->result;
             $orden_pendiente = $signal->orden_pendiente;
             $price_signal=$signal->price_signal;
             $cod_op=$signal->cod_op;
-            
+            if($take_profit_edit != 0){
+                //$take_profit = $take_profit_edit;
+                conviertePIP($asset,$tipo_signal,$address,$price_signal,'TP',$take_profit_edit);
+            }
+            if($stop_loss_edit != 0){
+                //$stop_loss = $stop_loss_edit;
+                conviertePIP($asset,$tipo_signal,$address,$price_signal,'SL',$stop_loss_edit);
+            }
             $cod_price=$signal->cod_entry_price;
 
             $resultado = calculaResultadoSeñal($id,$tipo_signal, $address, $take_profit, $stop_loss, $signal->price_sell, $signal->price_buy,$orden_pendiente,$cod_op);
@@ -2331,21 +2333,20 @@ function updateTableSignals_membership() {
             $stop_loss = $signal->stop_loss;
             $take_profit_edit = $signal->take_profit_edit;
             $stop_loss_edit = $signal->stop_loss_edit;
-            
-            if($take_profit_edit != 0){
-                $take_profit = $take_profit_edit;
-            }
-            if($stop_loss_edit != 0){
-                $stop_loss = $stop_loss_edit;
-            }
-            
             $resultado = $signal->result;
             $orden_pendiente = $signal->orden_pendiente;
             $price_signal=$signal->price_signal;
             $cod_op=$signal->cod_op;
             $cancel=$signal->cancel;
             $beep=$signal->beep;
-            
+            if($take_profit_edit != 0){
+                //$take_profit = $take_profit_edit;
+                $take_profit=conviertePIP($asset,$tipo_signal,$address,$price_signal,'TP',$take_profit_edit);
+            }
+            if($stop_loss_edit != 0){
+                //$stop_loss = $stop_loss_edit;
+                $stop_loss=conviertePIP($asset,$tipo_signal,$address,$price_signal,'SL',$stop_loss_edit);
+            }
             $cod_price=$signal->cod_entry_price;
             
             $resultado = calculaResultadoSeñal_membership($id,$tipo_signal, $address, $take_profit, $stop_loss, $signal->price_sell, $signal->price_buy,$orden_pendiente,$cod_op);
