@@ -260,12 +260,12 @@ function signal_page(){ //define el contenido de una pagina
                             <div class="form-group row"> <!-- class row ayuda a que los 2 input esten en la misma fila -->
                                 <div class="col-md-6">
                                     <label for="label-stop-loss">Stop Loss</label>
-                                    <input class="form-control" id="stop_loss" type="number"  step=1 />
+                                    <input class="form-control" id="stop_loss" type="number"  min="0" step=1 />
                                 </div>
 
                                 <div class="col-md-6"> 
                                     <label for="label-take-profit">Take profit</label>
-                                    <input class="form-control" id="take_profit"  type="number"  step=1  />
+                                    <input class="form-control" id="take_profit"  type="number" min="0"  step=1  />
                                 </div>
                                 <span id="error_tp_sl" class="text-error"></span>
                             </div>
@@ -343,13 +343,13 @@ function signal_page(){ //define el contenido de una pagina
                                     <input class="form-control" id="id-signal-publi" type="text" style="height:2.5em;"/>
                                 </div>
                                 <div class="col-md-3">
-                                    <label for="label-stop-loss">N°</label>
+                                    <label for="label-stop-loss">N° Señal</label>
                                     <input class="form-control" id="num-signal-publi" type="text" disabled style="height:2.5em;"/>
                                 </div>
-                                <div class="col-md-5">
+                                <div class="col-md-6">
                                     <label for="label-stop-loss">¿Que publicar?</label>
                                     <select class="form-control" id="select_publi">
-                                        <option value="1" selected>Comentario</option>
+                                        <option value="1" selected="selected">Comentario</option>
                                         <option value="2">Imagen</option>
                                     </select>
                                 </div>
@@ -375,6 +375,14 @@ function signal_page(){ //define el contenido de una pagina
                                 
                                 <span id="error_tp_sl" class="text-error"></span>
                             </div>
+                            <div class="form-group row" id="img_vista_php">    
+                                <div class="col-md-12"> 
+                                    <input class="form-control" id="cbx_publi"  type="checkbox" />
+                                    <label for="label-stop-loss">¿Desea publicar el comentario o imagen?</label>
+                                </div>
+                                
+                                <span id="error_tp_sl" class="text-error"></span>
+                            </div>
                             <div class="form-group row">    
                                 <div class="col-md-10">
                                     <label for="label-take-profit" style="visibility:hidden;">Link</label>
@@ -383,15 +391,6 @@ function signal_page(){ //define el contenido de una pagina
                                     </button> 
                                 </div>
                             </div>
-                            <div class="form-group row" id="img_vista_php">    
-                                <div class="col-md-12" >
-                                    <label id="nom-arch"></label>
-                                    <img id="image_g_php" style="max-width:100%; display:block;"/>
-                                </div>
-                                
-                                <span id="error_tp_sl" class="text-error"></span>
-                            </div>
-                            
                         </form>
                     </div>
                 </div>
@@ -415,12 +414,12 @@ function signal_page(){ //define el contenido de una pagina
                                 </div>
                                 <div class="col-md-4">
                                     <label for="label-stop-loss">New Stop Loss</label>
-                                    <input class="form-control" id="stop-loss-edit" type="number"  step=1 style="height:2.5em;"/>
+                                    <input class="form-control" id="stop-loss-edit" type="number" min="0"  step=1 style="height:2.5em;"/>
                                 </div>
 
                                 <div class="col-md-4"> 
                                     <label for="label-take-profit">New Take profit</label>
-                                    <input class="form-control" id="take-profit-edit"  type="number"  step=1  style="height:2.5em;"/>
+                                    <input class="form-control" id="take-profit-edit"  type="number" min="0"  step=1  style="height:2.5em;"/>
                                 </div>
                                 <!--<div class="col-md-2">
                                     <label for="label-take-profit" style="display: block;">Imagen</label>

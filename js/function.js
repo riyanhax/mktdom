@@ -213,6 +213,11 @@ jQuery(document).ready(function() {
         var method_link_e= jQuery("#method_link_e").val();
         var rr_link_g= jQuery("#rr_link_g").val();
         var publi_comentario= jQuery("#publi-comentario").val();
+        if(jQuery("#select_publi").val()==1){
+            var publi_imagen= '';
+        }else{
+            var publi_imagen= imagen_file;
+        }
         /* Obtenemos precios de compra y venta */
        var price_signal_sell = jQuery('#select-simbolo :selected').attr('label_sell'); 
        var price_signal_buy = jQuery('#select-simbolo :selected').attr('label_buy'); 
@@ -242,7 +247,8 @@ jQuery(document).ready(function() {
                 method_e:method_e,
                 method_link_e:method_link_e,
                 rr_link_g:rr_link_g,
-                publi_comentario:publi_comentario
+                publi_comentario:publi_comentario,
+                publi_imagen:publi_imagen
             }, function(data, status) { 
                     if(status == 'success'){
 //                        jQuery('#mensaje-signal').show(); 
@@ -255,6 +261,9 @@ jQuery(document).ready(function() {
 //                            "order": [[0, "desc"]]
 //                        });
                         
+                        jQuery("#btn-imagen").val('')
+                        jQuery("#publi-comentario").val('');
+                        jQuery('#image_g').attr('src', '');
                         jQuery('#take_profit').val('');
                         jQuery('#stop_loss').val('');
                         jQuery('#at_price').val('');
@@ -310,6 +319,7 @@ function validar(){
     at = jQuery("#at_price").val();
     jQuery("#label-imagen").hide();
     jQuery("#img_vista").hide();
+    jQuery("#coment_publi").hide();
     jQuery("#id-signal-publi").val('');
     jQuery("#num-signal-publi").val('');
     jQuery("#publi-comentario").val('');
@@ -371,7 +381,7 @@ jQuery(':file').change(function(){
                 reader.readAsDataURL(this.files[0]);
             } 
     }else{
-        alert('La imagen es demasiado grande, porfavor intente con otra');
+        alert('La imagen es demasiado grande, por favor intente con otra');
     }
     
     

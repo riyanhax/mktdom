@@ -406,6 +406,7 @@ function registraDatos(){
     $method_link_e = $_POST['method_link_e'];
     $rr_link_g = $_POST['rr_link_g'];
     $publi_comentario_g = $_POST['publi_comentario'];
+    $publi_imagen_g = $_POST['publi_imagen'];
     actualizaPrecios(); //actualizar precios
 
     $precio_signal=generaPriceSignal($cod_asset,$tipo_signal,$signal); //funcion que va a obtner el precio con el que esta comprando o vendiendo
@@ -449,6 +450,7 @@ function registraDatos(){
             'method_link' => $method_link_e,
             'rr_link' => $rr_link_g,
             'commentary' => $publi_comentario_g,
+           'image' => $publi_imagen_g,
         );
     /* Validamos para que solo existan 20 FIFO */   
     $total = $wpdb->get_var( "SELECT COUNT(*) FROM wp_signals" );//consultamos cuantos registros existe en la BD
@@ -1010,7 +1012,7 @@ $cad = "";
                                                     
                                                     
                                                     if($signal->switch_publi==1){
-                                                        $cad .='<td class="toolTip" style="width: 100%"><a href="javascript:void(0);" id="btn_mostrar_publi" onclick="mostrarPublicidad(\''.$signal->ID.'\',\''.$num_g.'\')" title="Commentary"><span class="dashicons dashicons-admin-comments" style="color:#ff3"></span></a><span class="toolTipText" style="width:500px;"><div><img style="width:100%;" src="'.$signal->image.'"></div></span></td>';
+                                                        $cad .='<td class="toolTip" style="width: 100%;"><a href="javascript:void(0);" id="btn_mostrar_publi" onclick="mostrarPublicidad(\''.$signal->ID.'\',\''.$num_g.'\')" title="Commentary"><span class="dashicons dashicons-admin-comments" style="color:#ff3"></span></a><span class="toolTipText" style="width:500px;"><div><img style="width:100%;" src="'.$signal->image.'"></div></span></td>';
                                                     }else{
                                                         $cad .='<td class="toolTip" style="width: 100%;"><a href="javascript:void(0);" id="btn_mostrar_publi" onclick="mostrarPublicidad(\''.$signal->ID.'\',\''.$num_g.'\')" title="Commentary"><span class="dashicons dashicons-admin-comments" style="color:#ff3"></span></a><span class="toolTipText" style=" display:none;">publicacion</span></td>';
                                                     }
