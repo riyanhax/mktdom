@@ -233,6 +233,12 @@ jQuery(document).ready(function() {
         }else{
             tipo_signal = jQuery("#tipo_orden").val();    
         }
+        
+        if(jQuery('#cbx_publi').is(':checked')){
+            var cbx_num=1;
+        }else{
+            var cbx_num=0;
+        }
        
         jQuery("div#divLoading").addClass('show'); //genera gif
         jQuery.post('/wp-admin/admin-ajax.php', {
@@ -248,7 +254,8 @@ jQuery(document).ready(function() {
                 method_link_e:method_link_e,
                 rr_link_g:rr_link_g,
                 publi_comentario:publi_comentario,
-                publi_imagen:publi_imagen
+                publi_imagen:publi_imagen,
+                publicar:cbx_num
             }, function(data, status) { 
                     if(status == 'success'){
 //                        jQuery('#mensaje-signal').show(); 
