@@ -1015,7 +1015,11 @@ $cad = "";
                                                     
                                                     if($signal->publicar==1){
                                                         if($signal->switch_publi==1){
-                                                            $cad .='<td class="toolTip" style="width: 100%;"><a href="javascript:void(0);" id="btn_mostrar_publi" onclick="mostrarPublicidad(\''.$signal->ID.'\',\''.$num_g.'\')" title="Commentary"><span class="dashicons dashicons-admin-comments" style="color:#ff3"></span></a><span class="toolTipText" style="width:500px;"><div><img style="width:100%;" src="'.$signal->image.'"></div></span></td>';
+                                                            if($signal->commentary==null){
+                                                                $cad .='<td class="toolTip" style="width: 100%;"><a href="javascript:void(0);" id="btn_mostrar_publi" onclick="mostrarPublicidad(\''.$signal->ID.'\',\''.$num_g.'\')" title="Commentary"><span class="dashicons dashicons-admin-comments" style="color:#ff3"></span></a><span class="toolTipText" style="width:500px;"><div><img style="width:100%;" src="'.$signal->image.'"></div></span></td>';
+                                                            }else{
+                                                                $cad .='<td class="toolTip" style="width: 100%;"><a href="javascript:void(0);" id="btn_mostrar_publi" onclick="mostrarPublicidad(\''.$signal->ID.'\',\''.$num_g.'\')" title="Commentary"><span class="dashicons dashicons-admin-comments" style="color:#ff3"></span></a><span class="toolTipText" style="width:500px;"><div>'.$signal->commentary.'</div></span></td>';
+                                                            }
                                                         }else{
                                                             $cad .='<td class="toolTip" style="width: 100%;"><a href="javascript:void(0);" id="btn_mostrar_publi" onclick="mostrarPublicidad(\''.$signal->ID.'\',\''.$num_g.'\')" title="Commentary"><span class="dashicons dashicons-admin-comments" style="color:#ff3"></span></a><span class="toolTipText" style=" display:none;">publicacion</span></td>';
                                                         }

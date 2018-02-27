@@ -331,6 +331,8 @@ function validar(){
     jQuery("#id-signal-publi").val('');
     jQuery("#num-signal-publi").val('');
     jQuery("#publi-comentario").val('');
+    jQuery("#select_publi").val('1');
+    jQuery("#select-calidad").val('1');
     
     tipo_signal = jQuery("#tipo_signal").val();
     
