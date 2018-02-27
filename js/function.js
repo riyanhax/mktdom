@@ -327,12 +327,12 @@ function validar(){
     at = jQuery("#at_price").val();
     jQuery("#label-imagen").hide();
     jQuery("#img_vista").hide();
-    jQuery("#coment_publi").hide();
+    //jQuery("#coment_publi").hide();
     jQuery("#id-signal-publi").val('');
     jQuery("#num-signal-publi").val('');
     jQuery("#publi-comentario").val('');
     jQuery("#select_publi").val('1');
-    jQuery("#select-calidad").val('1');
+    //jQuery("#select-calidad").val('1');
     
     tipo_signal = jQuery("#tipo_signal").val();
     
@@ -406,6 +406,18 @@ jQuery('#btn-cancelar').click(function(){
     jQuery('#id-signal').val('');
     jQuery('#num-signal').val('');
     resetEdit();
+});
+
+jQuery('#btn-cancel-publi').click(function(){
+    jQuery('#btn-update-publi').prop('disabled',true);
+    jQuery('#publi-comentario').val('');
+    jQuery('#btn-imagen').val('');
+    jQuery('#image_g').attr('src', '');
+    jQuery("#nom-arch").text('');
+    jQuery('#id-signal-publi').val('');
+    jQuery('#num-signal-publi').val('');
+    jQuery('#cbx_publi').prop('checked', false);
+    //$("#diasHabilitados input[type=checkbox]").prop('checked', true);
 });
 
 jQuery("#select_publi").change(function () {
@@ -541,12 +553,19 @@ function actualizarTakeProfit_StopLoss(){
 function actualizarPublicacion(){
     var id_signal = jQuery("#id-signal-publi").val();
     var select_publi = jQuery("#select_publi").val();
+    if(jQuery('#cbx_publi').is(':checked')){
+        var cbx_num=1;
+    }else{
+        var cbx_num=0;
+    }
     if(select_publi==1){
         var comentario = jQuery("#publi-comentario").val();
         var datos = {
             'action': 'actualizar_comentario',
             'id_signal':id_signal,
-            'whatever': comentario
+            'publi_comentario': comentario,
+            'publi_imagen': '',
+            'publicar': cbx_num
         };
         jQuery.post(ajaxurl, datos, function(data, status) {
                 if(status == 'success'){
@@ -562,7 +581,9 @@ function actualizarPublicacion(){
         var datos = {
             'action': 'actualizar_imagen',
             'id_signal':id_signal,
-            'whatever': imagen
+            'publi_imagen': imagen,
+            'publi_comentario': '',
+            'publicar': cbx_num
         };
         jQuery.post(ajaxurl, datos, function(data, status) {
                 if(status == 'success'){
@@ -685,14 +706,23 @@ function resetPubli(){
                     }       
     });
 }
+
+
+var num_sign=0;
 var num_publi=0;
 function mostrarPublicidad(id_signal,num){
-    
-    if(num_publi==0){
-        num_publi=1;
-    }else{
-        num_publi=0;
+    if(num_sign==num){
+        if(num_publi==0){
+            num_publi=1;
+        }else{
+            num_publi=0;
+        }
     }
+    else{
+        num_publi=1;
+        num_sign=num;
+    }
+    
     jQuery("div#divLoading").addClass('show'); //genera gif
     var datos = {
             'action': 'capturar_publicidad',
@@ -703,7 +733,7 @@ function mostrarPublicidad(id_signal,num){
             if(status === 'success'){
                 jQuery("div#divLoading").removeClass('show');//elimina gif
                 //jQuery(".toolTipText").text(data);
-                //alert("Successfully load 1234  "+data);
+                alert("Successfully load 1234  "+data);
             }       
     });
 }

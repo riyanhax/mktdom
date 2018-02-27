@@ -212,7 +212,7 @@ function cancelaDatos(){
             $cad = draw_table_signal();
             echo json_encode($cad);
             exit();
-            
+            wp_die();
             
             
         }
@@ -234,6 +234,7 @@ function actualiza_TakeProfit_StopLoss(){
             $cad = draw_table_signal();
             echo json_encode($cad);
             exit();
+            wp_die();
         }
     }
 }
@@ -242,16 +243,18 @@ function actualizar_imagen(){
     if (isset($_POST['action'])) {
         if($_POST['id_signal'] >0){
             $id_signal=$_POST['id_signal'];
-            $imagen=$_POST['whatever'];
-            //$imagen='khgfkhgfjhgfjg';
+            $imagen=$_POST['publi_imagen'];
+            $comentario=$_POST['publi_comentario'];
+            $publicar=$_POST['publicar'];
         
             $table_signals = $wpdb->prefix . "signals";
-            $wpdb->update($table_signals, array('image' =>$imagen), array('ID' => $id_signal));     
+            $wpdb->update($table_signals, array('image' =>$imagen,'commentary' =>$comentario,'publicar' =>$publicar), array('ID' => $id_signal));     
        
             //$cad = draw_table_signal();
             //echo json_encode($cad);
             echo $imagen;
             exit();
+            wp_die();
         }
     }
 }
@@ -261,14 +264,17 @@ function actualizar_comentario(){
     if (isset($_POST['action'])) {
         if($_POST['id_signal'] >0){
             $id_signal=$_POST['id_signal'];
-            $comentario=$_POST['whatever'];
+            $comentario=$_POST['publi_comentario'];
+            $imagen=$_POST['publi_imagen'];
+            $publicar=$_POST['publicar'];
         
             $table_signals = $wpdb->prefix . "signals";
-            $wpdb->update($table_signals, array('commentary' =>$comentario), array('ID' => $id_signal));     
+            $wpdb->update($table_signals, array('commentary' =>$comentario,'image' =>$imagen,'publicar' =>$publicar), array('ID' => $id_signal));     
        
             $cad = draw_table_signal();
             echo json_encode($cad);
             exit();
+            wp_die();
         }
     }
 }
@@ -290,6 +296,7 @@ function capturar_publicidad(){
             //echo json_encode($cad);
             echo $num;
             exit();
+            //wp_die();
         }
     }
 }

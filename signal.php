@@ -384,10 +384,16 @@ function signal_page(){ //define el contenido de una pagina
                                 <span id="error_tp_sl" class="text-error"></span>
                             </div>
                             <div class="form-group row">    
-                                <div class="col-md-10">
+                                <div class="col-md-7">
                                     <label for="label-take-profit" style="visibility:hidden;">Link</label>
                                     <button type="button" class="btn btn-primary " id="btn-update-publi" >
                                         Actualizar publicación
+                                    </button> 
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="label-take-profit" style="visibility:hidden;">Link</label>
+                                    <button type="button" class="btn btn-primary " id="btn-cancel-publi" >
+                                        Cancelar
                                     </button> 
                                 </div>
                             </div>
