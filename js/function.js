@@ -261,7 +261,8 @@ jQuery(document).ready(function() {
 //                            "order": [[0, "desc"]]
 //                        });
                         
-                        jQuery("#btn-imagen").val('')
+                        jQuery("#nom-arch").text('');
+                        jQuery("#btn-imagen").val('');
                         jQuery("#publi-comentario").val('');
                         jQuery('#image_g').attr('src', '');
                         jQuery('#take_profit').val('');
@@ -363,7 +364,7 @@ jQuery(':file').change(function(){
     //obtenemos el tipo de archivo image/png ejemplo
     var fileType = file.type;
     
-    alert(fileSize);
+    //alert(fileSize);
     if(fileSize <= 705566){
             jQuery('#nom-arch').text(fileName);
     
@@ -371,8 +372,8 @@ jQuery(':file').change(function(){
                 var reader = new FileReader();
 
                 reader.onload = function (e) {
-                    console.log(e.target.result.toString());
-                    alert(e.target.result.toString());
+                    //console.log(e.target.result.toString());
+                    //alert(e.target.result.toString());
                     imagen_file = e.target.result.toString();
 
                     jQuery('#image_g').attr('src', e.target.result);
