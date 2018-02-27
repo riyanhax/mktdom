@@ -353,21 +353,28 @@ jQuery(':file').change(function(){
     //obtenemos el tipo de archivo image/png ejemplo
     var fileType = file.type;
     
-    jQuery('#nom-arch').text(fileName);
+    alert(fileSize);
+    if(fileSize <= 705566){
+            jQuery('#nom-arch').text(fileName);
     
-    if (this.files && this.files[0]) {
-        var reader = new FileReader();
+            if (this.files && this.files[0]) {
+                var reader = new FileReader();
 
-        reader.onload = function (e) {
-            console.log(e.target.result.toString());
-            alert(e.target.result.toString());
-            imagen_file = e.target.result.toString();
-            
-            jQuery('#image_g').attr('src', e.target.result);
-        };
+                reader.onload = function (e) {
+                    console.log(e.target.result.toString());
+                    alert(e.target.result.toString());
+                    imagen_file = e.target.result.toString();
 
-        reader.readAsDataURL(this.files[0]);
+                    jQuery('#image_g').attr('src', e.target.result);
+                };
+
+                reader.readAsDataURL(this.files[0]);
+            } 
+    }else{
+        alert('La imagen es demasiado grande, porfavor intente con otra');
     }
+    
+    
 });
 
 jQuery('#btn-cancelar').click(function(){
@@ -666,7 +673,7 @@ function mostrarPublicidad(id_signal,num){
     }else{
         num_publi=0;
     }
-
+    jQuery("div#divLoading").addClass('show'); //genera gif
     var datos = {
             'action': 'capturar_publicidad',
             'id_signal':id_signal,
@@ -674,6 +681,7 @@ function mostrarPublicidad(id_signal,num){
     };
     jQuery.post(ajaxurl, datos, function(data, status) {
             if(status === 'success'){
+                jQuery("div#divLoading").removeClass('show');//elimina gif
                 //jQuery(".toolTipText").text(data);
                 //alert("Successfully load 1234  "+data);
             }       
