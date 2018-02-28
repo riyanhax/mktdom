@@ -56,7 +56,7 @@ function signal_install()
         `pips` FLOAT NULL DEFAULT '0',
         `cod_op` TINYINT(1) NOT NULL DEFAULT '0',
         `beep` TINYINT(1) NOT NULL DEFAULT '0',
-        `closing_price` TIME NULL DEFAULT NULL,
+        `closing_price` FLOAT NULL DEFAULT NULL,
         `closing_time` TIME NULL DEFAULT NULL,
         `method` VARCHAR(255) NULL DEFAULT NULL COLLATE 'utf8_spanish2_ci',
         `method_link` VARCHAR(255) NULL DEFAULT NULL COLLATE 'utf8_spanish2_ci',
@@ -66,6 +66,9 @@ function signal_install()
         `switch_sl` TINYINT(1) NULL DEFAULT '0',
         `switch_tp` TINYINT(1) NULL DEFAULT '0',
         `updated` TINYINT(1) NULL DEFAULT '0',
+        `switch_edit` TINYINT(1) NOT NULL DEFAULT '0',
+        `publicar` TINYINT(1) NOT NULL DEFAULT '0',
+        `switch_publi` TINYINT(1) NOT NULL DEFAULT '0',
 	PRIMARY KEY (`ID`)
         );";
     

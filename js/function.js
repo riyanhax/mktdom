@@ -567,7 +567,7 @@ function actualizarPublicacion(){
             'publi_imagen': '',
             'publicar': cbx_num
         };
-        jQuery.post(ajaxurl, datos, function(data, status) {
+        jQuery.post('/wp-admin/admin-ajax.php', datos, function(data, status) {
                 if(status == 'success'){
                             //alert("Successfully update edit");
                             //var obj = JSON.parse(data);
@@ -585,7 +585,7 @@ function actualizarPublicacion(){
             'publi_comentario': '',
             'publicar': cbx_num
         };
-        jQuery.post(ajaxurl, datos, function(data, status) {
+        jQuery.post('/wp-admin/admin-ajax.php', datos, function(data, status) {
                 if(status == 'success'){
                             alert(data);
                             //var obj = JSON.parse(data);
@@ -620,7 +620,7 @@ function editarDatosTP_SL_edit(id_signal,stop_loss,take_profit,num_g,precio,asse
             'id_signal':id_signal,
             'whatever': valor
     };
-    jQuery.post(ajaxurl, datos, function(data, status) {
+    jQuery.post('/wp-admin/admin-ajax.php', datos, function(data, status) {
             if(status == 'success'){
                         //alert("Successfully update edit");
                         var obj = JSON.parse(data);
@@ -651,7 +651,7 @@ function switch_stoploss(){
             'whatever': num9
     };
     jQuery("div#divLoading").addClass('show'); //genera gif
-    jQuery.post(ajaxurl, datos, function(data, status) {
+    jQuery.post('/wp-admin/admin-ajax.php', datos, function(data, status) {
             if(status == 'success'){
                         //alert("Successfully update "+response);
                         var obj = JSON.parse(data);
@@ -675,7 +675,7 @@ function switch_takeprofit(){
             'whatever': num2
     };
     jQuery("div#divLoading").addClass('show'); //genera gif
-    jQuery.post(ajaxurl, datos, function(data, status) {
+    jQuery.post('/wp-admin/admin-ajax.php', datos, function(data, status) {
             if(status === 'success'){
                         //alert("Successfully update "+response);
                         var obj = JSON.parse(data);
@@ -690,7 +690,7 @@ function resetEdit(){
     var datos = {
             'action': 'resetEdit'
     };
-    jQuery.post(ajaxurl, datos, function(data, status) {
+    jQuery.post('/wp-admin/admin-ajax.php', datos, function(data, status) {
             if(status === 'success'){
                         //alert("Successfully load");
                         //var obj = JSON.parse(data);
@@ -702,7 +702,7 @@ function resetPubli(){
     var datos = {
             'action': 'resetPubli'
     };
-    jQuery.post(ajaxurl, datos, function(data, status) {
+    jQuery.post('/wp-admin/admin-ajax.php', datos, function(data, status) {
             if(status === 'success'){
                         //alert("Successfully load");
                         //var obj = JSON.parse(data);
@@ -733,7 +733,7 @@ function mostrarPublicidad(id_signal,num){
             'id_signal':id_signal,
             'num': num_publi
     };
-    jQuery.post(ajaxurl, datos, function(data, status) {
+    jQuery.post('/wp-admin/admin-ajax.php', datos, function(data, status) {
             if(status === 'success'){
                 jQuery("div#divLoading").removeClass('show');//elimina gif
                 //jQuery(".toolTipText").text(data);
