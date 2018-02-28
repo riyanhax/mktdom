@@ -911,11 +911,11 @@ $cad = "";
                                 }
                             }
                             
-                            if($signal->result>0){
+                            /*if($signal->result>0){
                                 $suma_rr_g+=$signal->take_profit/$signal->stop_loss;
                                 $num_rr_g++;
                             }
-                            $num_g++;
+                            $num_g++;*/
                             $pips_g=abs(round($pips_g,2));
                             /*if($signal->cancel==1){
                                 $pips_g=$signal->pips;
@@ -973,16 +973,31 @@ $cad = "";
                                                         $cad.='<td '.$class_quality.'></td>';
                                                     }else{
                                                         if($signal->switch_sl!=0 && $stop_loss_edit!=0){
-                                                            $var_sl=conviertePIP($asset,$signal->type_of_order,$signal->address,$precio,'SL',$stop_loss_edit);
+                                                            //$var_sl=conviertePIP($asset,$signal->type_of_order,$signal->address,$precio,'SL',$stop_loss_edit);
+                                                            $var_sl=$stop_loss_edit;
                                                         }else{
-                                                            $var_sl=$stop_loss;
+                                                            //$var_sl=$stop_loss;
+                                                            if(asset==='JPY'){
+                                                                $var_sl=abs(($stop_loss-$precio)*100);
+                                                            }else{
+                                                                $var_sl=abs(($stop_loss-$precio)*10000);
+                                                            }
+                                                            $var_sl=round($var_sl);
                                                         }
+                                                        
                                                         if($signal->switch_tp!=0 && $take_profit_edit!=0){
-                                                            $var_tp=conviertePIP($asset,$signal->type_of_order,$signal->address,$precio,'TP',$take_profit_edit);
+                                                            //$var_tp=conviertePIP($asset,$signal->type_of_order,$signal->address,$precio,'TP',$take_profit_edit);
+                                                            $var_tp=$take_profit_edit;
                                                         }else{
-                                                            $var_tp=$take_profit;
+                                                            //$var_tp=$take_profit;
+                                                            if(asset==='JPY'){
+                                                                $var_tp=abs(($take_profit-$precio)*100);
+                                                            }else{
+                                                                $var_tp=abs(($take_profit-$precio)*10000);
+                                                            }
+                                                            $var_tp=round($var_tp);
                                                         }
-                                                        $cad.='<td '.$class_quality.'>'.round($var_tp/$var_sl,5).'<a href="'.$signal->rr_link.'">(?)</a></td>';
+                                                        $cad.='<td '.$class_quality.'>'.abs(round($var_tp/$var_sl,1)).'<a href="'.$signal->rr_link.'">(?)</a></td>';
                                                     }
                                                     
                                                     
@@ -1048,14 +1063,21 @@ $cad = "";
                                         
                                                     
                                                     $cad.='</tr>';
+                                                    
+                                                    if($signal->result>0){
+                                                        //$suma_rr_g+=$signal->take_profit/$signal->stop_loss;
+                                                        $suma_rr_g+=$var_tp/$var_sl;
+                                                        $num_rr_g++;
+                                                    }
+                                                    $num_g++;
                                         
                             }
-                            $prom_rr_g=round($suma_rr_g/$num_rr_g);
+                            $prom_rr_g=round(($suma_rr_g/$num_rr_g),1);
                         }
                         
                         $suma_pip = calculaSumaPip($cont_pips_bien,$cont_pips_mal); //funcion que calcula el total de pip ganados o perdidos
                         
-                        $cad .="<tr><td colspan='8' class='aling_total'><b>TOTAL</b></td><td>".$prom_rr_g." ".$num_rr_g."</td><td colspan='3'></td>".$suma_pip."</tr>";
+                        $cad .="<tr><td colspan='8' class='aling_total'><b>TOTAL</b></td><td>".$prom_rr_g."</td><td colspan='3'></td>".$suma_pip."</tr>";
 			$cad .='</tbody>
 			</table>
 		</div>
