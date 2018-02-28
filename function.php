@@ -608,7 +608,7 @@ $cont_pips_mal=0;
 $suma_rr_g=0;
 $num_rr_g=0;
 $prom_rr_g=0;
-$num_g=0;
+$num_g=1;
 global $numero;
 
 $data = $wpdb->get_results( 
@@ -629,7 +629,7 @@ $cad = "";
 				<thead>
 					<tr>
 						<th class="text-center">
-							'.$ultimo->switch_tp.'
+							N°
 						</th>
                                                 <th class="text-center" style="display:none">
 							ID 
