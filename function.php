@@ -932,7 +932,7 @@ $cad = "";
                                                     <td ><a target="_blank" href="'.$signal->method_link.'">'.$signal->method.'</a></td>
                                                     <td '.$style_ok_po.'>'.digitos($precio,$signal->cod_entry_price).'</td>';
                                                     
-                                                    
+                                                    /**************************    COLUMNA STOP LOSS    *******************************/
                                         
                                                     if($signal->switch_sl==0){
                                                         if($stop_loss_edit==0){
@@ -950,6 +950,8 @@ $cad = "";
                                                         }
                                                     }
                                                     
+                                                    /**************************    COLUMNA TAKE PROFIT    *******************************/
+                                                    
                                                     if($signal->switch_tp==0){
                                                         if($take_profit_edit==0){
                                                             $cad.='<td>'.$take_profit.'</td>';
@@ -965,6 +967,7 @@ $cad = "";
                                                             $cad.='<td style="color:#00ffff">'.conviertePIP($asset,$signal->type_of_order,$signal->address,$precio,'TP',$take_profit_edit).'</td>';
                                                         }
                                                     }
+                                                    
                                                     //**************  COLUMNA R / R  *******************
                                                     if($signal->address=="Pending Order" && $signal->cod_op=0){
                                                         $cad.='<td '.$class_quality.'></td>';
@@ -2234,14 +2237,14 @@ function updateTableSignals() {
             $orden_pendiente = $signal->orden_pendiente;
             $price_signal=$signal->price_signal;
             $cod_op=$signal->cod_op;
-            if($take_profit_edit != 0){
+            /*if($take_profit_edit != 0){
                 //$take_profit = $take_profit_edit;
-                $take_profit_edit = conviertePIP($asset,$tipo_signal,$address,$price_signal,'TP',$take_profit_edit);
+                $take_profit = conviertePIP($asset,$tipo_signal,$address,$price_signal,'TP',$take_profit_edit);
             }
             if($stop_loss_edit != 0){
                 //$stop_loss = $stop_loss_edit;
-                $stop_loss_edit = conviertePIP($asset,$tipo_signal,$address,$price_signal,'SL',$stop_loss_edit);
-            }
+                $stop_loss = conviertePIP($asset,$tipo_signal,$address,$price_signal,'SL',$stop_loss_edit);
+            }*/
             $cod_price=$signal->cod_entry_price;
 
             $resultado = calculaResultadoSeñal($id,$tipo_signal, $address, $take_profit, $stop_loss, $signal->price_sell, $signal->price_buy,$orden_pendiente,$cod_op);
@@ -2410,14 +2413,14 @@ function updateTableSignals_membership() {
             $cod_op=$signal->cod_op;
             $cancel=$signal->cancel;
             $beep=$signal->beep;
-            if($take_profit_edit != 0){
+            /*if($take_profit_edit != 0){
                 //$take_profit = $take_profit_edit;
                 $take_profit=conviertePIP($asset,$tipo_signal,$address,$price_signal,'TP',$take_profit_edit);
             }
             if($stop_loss_edit != 0){
                 //$stop_loss = $stop_loss_edit;
                 $stop_loss=conviertePIP($asset,$tipo_signal,$address,$price_signal,'SL',$stop_loss_edit);
-            }
+            }*/
             $cod_price=$signal->cod_entry_price;
             
             $resultado = calculaResultadoSeñal_membership($id,$tipo_signal, $address, $take_profit, $stop_loss, $signal->price_sell, $signal->price_buy,$orden_pendiente,$cod_op);

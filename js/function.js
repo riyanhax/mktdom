@@ -637,24 +637,26 @@ function editarPublicacion(id_signal,num_g){
     jQuery("#select_publi").focus();
 }
 
-var num=1;
+var num9=1;
 function switch_stoploss(){
-    if(num==1){
+    if(num9==1){
         jQuery( "#sw_sl_g" ).html('(Original)');
-        num=0;
+        num9=0;
     }else{
         jQuery( "#sw_sl_g" ).html('(Edited)');
-        num=1;
+        num9=1;
     }
     var datos = {
             'action': 'stop_loss',
-            'whatever': num
+            'whatever': num9
     };
+    jQuery("div#divLoading").addClass('show'); //genera gif
     jQuery.post(ajaxurl, datos, function(data, status) {
             if(status == 'success'){
                         //alert("Successfully update "+response);
                         var obj = JSON.parse(data);
                         jQuery( "#tabla-signal-admin" ).html(obj );
+                        jQuery("div#divLoading").removeClass('show');//elimina gif 
                     }       
     });
 }
@@ -672,11 +674,13 @@ function switch_takeprofit(){
             'action': 'take_profit',
             'whatever': num2
     };
+    jQuery("div#divLoading").addClass('show'); //genera gif
     jQuery.post(ajaxurl, datos, function(data, status) {
             if(status === 'success'){
                         //alert("Successfully update "+response);
                         var obj = JSON.parse(data);
                         jQuery( "#tabla-signal-admin" ).html(obj );
+                        jQuery("div#divLoading").removeClass('show');//elimina gif 
                     }       
     });
 }
