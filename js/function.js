@@ -737,7 +737,7 @@ function mostrarPublicidad(id_signal,num){
             if(status === 'success'){
                 jQuery("div#divLoading").removeClass('show');//elimina gif
                 //jQuery(".toolTipText").text(data);
-                alert("Successfully load 1234  "+data);
+                //alert("Successfully load 1234  "+data);
             }       
     });
 }

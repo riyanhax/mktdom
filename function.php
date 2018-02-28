@@ -1038,7 +1038,7 @@ $cad = "";
                                                     }
                                                     
                                                     
-                                                    if($signal->publicar==1){
+                                                    //if($signal->publicar==1){
                                                         if($signal->switch_publi==1){
                                                             if($signal->commentary==null){
                                                                 $cad .='<td class="toolTip" style="width: 100%;"><a href="javascript:void(0);" id="btn_mostrar_publi" onclick="mostrarPublicidad(\''.$signal->ID.'\',\''.$num_g.'\')" title="Commentary"><span class="dashicons dashicons-admin-comments" style="color:#ff3"></span></a><span class="toolTipText" style="width:500px;"><div><img style="width:100%;" src="'.$signal->image.'"></div></span></td>';
@@ -1048,9 +1048,9 @@ $cad = "";
                                                         }else{
                                                             $cad .='<td class="toolTip" style="width: 100%;"><a href="javascript:void(0);" id="btn_mostrar_publi" onclick="mostrarPublicidad(\''.$signal->ID.'\',\''.$num_g.'\')" title="Commentary"><span class="dashicons dashicons-admin-comments" style="color:#ff3"></span></a><span class="toolTipText" style=" display:none;">publicacion</span></td>';
                                                         }
-                                                    }else{
-                                                        $cad .='<td class="toolTip" style="width: 100%;"><span class="dashicons dashicons-admin-comments"></span></td>';
-                                                    }
+                                                    //}else{
+                                                        //$cad .='<td class="toolTip" style="width: 100%;"><span class="dashicons dashicons-admin-comments"></span></td>';
+                                                    //}
                                                     
                                                     /*if($signal->switch_publi==1){
                                                         $cad .='<td class="toolTip" style="width: 100%;"><a href="javascript:void(0);" id="btn_mostrar_publi" onclick="mostrarPublicidad(\''.$signal->ID.'\',\''.$num_g.'\')" title="Commentary"><span class="dashicons dashicons-admin-comments" style="color:#ff3"></span></a><span class="toolTipText" style="width:500px;"><div><img style="width:100%;" src="'.$signal->image.'"></div></span></td>';
@@ -1190,11 +1190,11 @@ if($flag != ''){//beeps
 						</th>
 						<th class="text-center">
 							TAKE PROFIT
-						</th>
-						<th class="text-center">
+						</th>';
+						/*<th class="text-center">
 							R/R
-						</th>
-                                                <th class="text-center">
+						</th>*/
+                                                $cad .= '<th class="text-center">
 							CLOSING PRICE
 						</th>
                                                 <th class="text-center">
@@ -1425,12 +1425,27 @@ if($flag != ''){//beeps
                                                     <td ><a target="_blank" href="'.$signal->method_link.'">'.$signal->method.'</a></td>
                                                     <td '.$style_ok_po.'>'.digitos($precio,$signal->cod_entry_price).'</td>
                                                     <td>'.$stop_loss.'</td>
-                                                    <td>'.$take_profit.'</td>
-                                                    <td '.$class_quality.'>'.round($take_profit/$stop_loss,1).'<a style="color:#0077ff" href="'.$signal->rr_link.'">(?)</a></td>
-                                                    <td>'.$closing_price_c.'</td>
+                                                    <td>'.$take_profit.'</td>';
+                                                    /*<td '.$class_quality.'>'.round($take_profit/$stop_loss,1).'<a style="color:#0077ff" href="'.$signal->rr_link.'">(?)</a></td>*/
+                                                    $cad .= '<td>'.$closing_price_c.'</td>
                                                     <td>'.$closing_time.'</td>
                                                     <!--<td>'.$result.'</td>-->
                                                     <td '.$style_pips.'>'.$signal->pips.' '.$pips_g.'</td>';
+                                                    
+                                                    if($signal->publicar==1){
+                                                        if($signal->switch_publi==1){
+                                                            if($signal->commentary==null){
+                                                                $cad .='<td class="toolTip" style="width: 100%;"><a href="javascript:void(0);" id="btn_mostrar_publi" onclick="mostrarPublicidad(\''.$signal->ID.'\',\''.$num_g.'\')" title="Commentary"><span class="dashicons dashicons-admin-comments" style="color:#ff3"></span></a><span class="toolTipText" style="width:500px;"><div><img style="width:100%;" src="'.$signal->image.'"></div></span></td>';
+                                                            }else{
+                                                                $cad .='<td class="toolTip" style="width: 100%;"><a href="javascript:void(0);" id="btn_mostrar_publi" onclick="mostrarPublicidad(\''.$signal->ID.'\',\''.$num_g.'\')" title="Commentary"><span class="dashicons dashicons-admin-comments" style="color:#ff3"></span></a><span class="toolTipText" style="width:500px;"><div>'.$signal->commentary.'</div></span></td>';
+                                                            }
+                                                        }else{
+                                                            $cad .='<td class="toolTip" style="width: 100%;"><a href="javascript:void(0);" id="btn_mostrar_publi" onclick="mostrarPublicidad(\''.$signal->ID.'\',\''.$num_g.'\')" title="Commentary"><span class="dashicons dashicons-admin-comments" style="color:#ff3"></span></a><span class="toolTipText" style=" display:none;">publicacion</span></td>';
+                                                        }
+                                                    }else{
+                                                        $cad .='<td class="toolTip" style="width: 100%;"><span class="dashicons dashicons-admin-comments"></span></td>';
+                                                    }
+                                                    
                                         $cad.='</tr>';
                                         
                             }
@@ -1505,11 +1520,11 @@ $cad = "";
 						</th>
 						<th class="text-center">
 							TAKE PROFIT
-						</th>
-						<th class="text-center">
+						</th>';
+						/*<th class="text-center">
 							R/R
-						</th>
-                                                <th class="text-center">
+						</th>*/
+                                                $cad .= '<th class="text-center">
 							CLOSING PRICE
 						</th>
                                                 <th class="text-center">
@@ -1739,9 +1754,9 @@ $cad = "";
                                                     <td ><a target="_blank" href="'.$signal->method_link.'">'.$signal->method.'</a></td>
                                                     <td '.$style_ok_po.'>'.digitos($precio,$signal->cod_entry_price).'</td>
                                                     <td>'.$stop_loss.'</td>
-                                                    <td>'.$take_profit.'</td>
-                                                    <td '.$class_quality.'>'.round($take_profit/$stop_loss,1).'<a style="color: #0077ff" href="'.$signal->rr_link.'">(?)</a></td>
-                                                    <td>'.$closing_price_c.'</td>
+                                                    <td>'.$take_profit.'</td>';
+                                                    /*<td '.$class_quality.'>'.round($take_profit/$stop_loss,1).'<a style="color: #0077ff" href="'.$signal->rr_link.'">(?)</a></td>*/
+                                                    $cad .= '<td>'.$closing_price_c.'</td>
                                                     <td>'.$closing_time.'</td>
                                                     <!--<td>'.$result.'</td>-->
                                                     <td '.$style_pips.'>'.$signal->pips.' '.$pips_g.'</td>';
@@ -2032,8 +2047,8 @@ function actualizaPrecios(){
     //$ch = curl_init('https://forex.1forge.com/1.0.3/quotes?pairs=EURUSD,GBPUSD,AUDUSD,NZDUSD,USDCAD,USDJPY,EURJPY,EURAUD,GBPJPY,GBPAUD,AUDNZD,AUDJPY&api_key=T6xtYb1asOJv3dktmqCYGFbckRMP8Ugm');
     //$ch = curl_init('https://forex.1forge.com/1.0.3/quotes?pairs=EURUSD,GBPUSD,AUDUSD,NZDUSD,USDCAD,USDJPY,EURJPY,EURAUD,GBPJPY,GBPAUD,AUDNZD,AUDJPY&api_key=49rv3u9Xjdohn74vlhirYMkk9O1UPVEF');
     //$ch = curl_init('https://forex.1forge.com/1.0.3/quotes?pairs=EURUSD,GBPUSD,AUDUSD,NZDUSD,USDCAD,USDJPY,EURJPY,EURAUD,GBPJPY,GBPAUD,AUDNZD,AUDJPY&api_key=sPXBxhUWSVjiRlZGG5MmFbW4ooIN1zqF');
-    $ch = curl_init('https://forex.1forge.com/1.0.3/quotes?pairs=EURUSD,GBPUSD,AUDUSD,NZDUSD,USDCAD,USDJPY,EURJPY,EURAUD,GBPJPY,GBPAUD,AUDNZD,AUDJPY&api_key=1XSbz2osTYy4hJILXnIPI18BsNgOnco7');
-    //$ch = curl_init('https://forex.1forge.com/1.0.3/quotes?pairs=EURUSD,GBPUSD,AUDUSD,NZDUSD,USDCAD,USDJPY,EURJPY,EURAUD,GBPJPY,GBPAUD,AUDNZD,AUDJPY&api_key=XkcUf5UO1JTl6vKt3yeN3zTolQaCKNPU');
+    //$ch = curl_init('https://forex.1forge.com/1.0.3/quotes?pairs=EURUSD,GBPUSD,AUDUSD,NZDUSD,USDCAD,USDJPY,EURJPY,EURAUD,GBPJPY,GBPAUD,AUDNZD,AUDJPY&api_key=1XSbz2osTYy4hJILXnIPI18BsNgOnco7');
+    $ch = curl_init('https://forex.1forge.com/1.0.3/quotes?pairs=EURUSD,GBPUSD,AUDUSD,NZDUSD,USDCAD,USDJPY,EURJPY,EURAUD,GBPJPY,GBPAUD,AUDNZD,AUDJPY&api_key=XkcUf5UO1JTl6vKt3yeN3zTolQaCKNPU');
     //$ch = curl_init('https://forex.1forge.com/1.0.3/quotes?pairs=EURUSD,GBPUSD,AUDUSD,NZDUSD,USDCAD,USDJPY,EURJPY,EURAUD,GBPJPY,GBPAUD,AUDNZD,AUDJPY&api_key=5kypQttfi0GtmfBMUff0YdE4p60nZrLR');
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     $json = curl_exec($ch);
