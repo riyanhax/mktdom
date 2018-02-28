@@ -567,17 +567,19 @@ function actualizarPublicacion(){
             'publi_imagen': '',
             'publicar': cbx_num
         };
+        jQuery("div#divLoading").addClass('show'); //genera gif
         jQuery.post('/wp-admin/admin-ajax.php', datos, function(data, status) {
                 if(status == 'success'){
                             //alert("Successfully update edit");
                             //var obj = JSON.parse(data);
                             //jQuery( "#tabla-signal-admin" ).html(obj );
+                            jQuery("div#divLoading").removeClass('show');//elimina gif 
                         }       
         });
     }else{
         
         var imagen = imagen_file;
-        alert(imagen);
+        //alert(imagen);
         var datos = {
             'action': 'actualizar_imagen',
             'id_signal':id_signal,
@@ -585,11 +587,13 @@ function actualizarPublicacion(){
             'publi_comentario': '',
             'publicar': cbx_num
         };
+        jQuery("div#divLoading").addClass('show'); //genera gif
         jQuery.post('/wp-admin/admin-ajax.php', datos, function(data, status) {
                 if(status == 'success'){
-                            alert(data);
+                            //alert(data);
                             //var obj = JSON.parse(data);
                             //jQuery( "#tabla-signal-admin" ).html(obj );
+                            jQuery("div#divLoading").removeClass('show');//elimina gif
                         }       
         });
     }

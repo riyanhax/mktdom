@@ -61,7 +61,7 @@ function signal_install()
         `method` VARCHAR(255) NULL DEFAULT NULL COLLATE 'utf8_spanish2_ci',
         `method_link` VARCHAR(255) NULL DEFAULT NULL COLLATE 'utf8_spanish2_ci',
         `rr_link` VARCHAR(255) NULL DEFAULT NULL COLLATE 'utf8_spanish2_ci',
-        `image` BLOB,
+        `image` MEDIUMTEXT NULL,
         `commentary` VARCHAR(50) NULL DEFAULT NULL COLLATE 'utf8_spanish2_ci',
         `switch_sl` TINYINT(1) NULL DEFAULT '0',
         `switch_tp` TINYINT(1) NULL DEFAULT '0',
